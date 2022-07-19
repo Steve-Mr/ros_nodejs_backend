@@ -47,6 +47,6 @@ Topic name in ```scripts/gs-robot/real_time_data/cmd_vel.js``` .
 3. Access data through GET request
 Open your browser and go to ```localhost:8080/gs-robot/real_time_data/cmd_vel``` .  
 You should get response like 
-```json
-{"data":{"linear":{"x":0,"y":0,"z":0},"angular":{"x":0,"y":0,"z":0}},"errorCode":"","msg":"successed","successed":true}
-```
+    ```json
+    {"data":{"linear":{"x":0,"y":0,"z":0},"angular":{"x":0,"y":0,"z":0}},"errorCode":"","msg":"successed","successed":true}
+    ```

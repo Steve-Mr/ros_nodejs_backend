@@ -27,14 +27,15 @@ Then install necessary library in the server package you created.
 ```shell
 npm install rosnodejs
 npm install express
+npm install mysql
 ```
 For more information about rosnojejs, check their [official repo](https://github.com/RethinkRobotics-opensource/rosnodejs).
 
 ### Clone this Project
 
 In your server package create the scripts folder ```mkdir scripts && cd $_```.  
-Then clone this project ```git clone https://github.com/Steve-Mr/ros_nodejs_backend.git```.
-
+Then clone this project ```git clone https://github.com/Steve-Mr/ros_nodejs_backend.git .```.
+(The "." after git repo url is nessery which represents the destination directory.)
 
 ## Test
 This project has only been tested in simulated environment with specified config, to run it with your robot may needs some configuration.  

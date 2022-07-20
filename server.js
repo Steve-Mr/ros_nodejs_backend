@@ -4,6 +4,8 @@ var express = require('express');
 var app = express();
 
 app.use('/gs-robot', require('./gs-robot/real_time_data'))
+// 路由器注册，受到 /gs-robot 时，启用 real_time_data 路由
+app.use('/gs-robot', require('./gs-robot/data'))
 
 // 启动服务器
 app.listen(8080, function () {

@@ -26,11 +26,11 @@ const db = mysql.createPool({
             "dataFileName":"40dd8fcd-5e6d-4890-b620-88882d9d3977.data",
             "id":0,
             "mapInfo":{
-                "gridHeight":992,　// 栅格地图高度
-                "gridWidth":992,　 // 栅格地图宽度
-                "originX":-24.8,　 // 地图原点
-                "originY":-24.8,   // 地图原点
-                "resolution":0.05000000074505806　　//栅格化地图比例
+                "gridHeight":992, 
+                "gridWidth":992, 
+                "originX":-24.8, 
+                "originY":-24.8,  
+                "resolution":0.05000000074505806 
             },
             "name":result[index].map_name,
             "obstacleFileName":"",

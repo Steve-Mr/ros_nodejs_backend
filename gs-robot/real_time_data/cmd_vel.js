@@ -10,6 +10,7 @@ const rosnodejs = require('rosnodejs');
 const correct=JSON.parse('{"errorCode":"","msg":"successed","successed":true}');
 var message;
 
+  // Promise 保证事件顺序进行， resolve 将参数传递给后续 then
   var p = new Promise(function(resolve, reject){
   rosnodejs.initNode('/my_node').then(() => {
   const nh = rosnodejs.nh;

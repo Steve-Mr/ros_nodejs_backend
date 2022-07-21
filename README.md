@@ -28,6 +28,8 @@ Then install necessary library in the server package you created.
 npm install rosnodejs
 npm install express
 npm install mysql
+npm install js-yaml
+npm install image-size
 ```
 For more information about rosnojejs, check their [official repo](https://github.com/RethinkRobotics-opensource/rosnodejs).
 

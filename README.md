@@ -30,6 +30,7 @@ npm install express
 npm install mysql
 npm install js-yaml
 npm install image-size
+npm install cors
 ```
 For more information about rosnojejs, check their [official repo](https://github.com/RethinkRobotics-opensource/rosnodejs).
 

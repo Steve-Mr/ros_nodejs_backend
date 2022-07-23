@@ -6,34 +6,31 @@ const fs = require('fs')
 const mysql = require('mysql')
 const sizeOf = require('image-size')
 
+const db = require('../database')
+
 const router = express.Router();
 
 router.get('/maps', (req, res) => {
     let message = new Array();
-    let jsonObj = {};
-    jsonObj["data"] = [];
-
-    // 通过createPool方法连接服务器
-    const db = mysql.createPool({
-        host: '127.0.0.1', // 表示连接某个服务器上的mysql数据库
-        user: 'root', // 数据库的用户名 （默认为root）
-        password: '123456', // 数据库的密码 (默认为root)
-        database: 'robot',// 创建的本地数据库名称
-    })
 
     db.query('select * from map_info', (err, data) => {
         if (err) {
-            jsonObj["data"] = "{}";
-            jsonObj["errorCode"] = "";
-            jsonObj["msg"] = "failed";
-            jsonObj["successed"] = false;
+            res.json({
+                "data": "{}",
+                "errorCode": "",
+                "msg": "failed",
+                "successed": false
+            });
+
             return console.log(err.message); // 连接失败
         }
         if (data.length === 0) {
-            jsonObj["data"] = "{}";
-            jsonObj["errorCode"] = "";
-            jsonObj["msg"] = "successed";
-            jsonObj["successed"] = true;
+            res.json({
+                "data": "",
+                "errorCode": "",
+                "msg": "successed",
+                "successed": true
+              });
             return console.log('数据为空'); // 数据长度为0 则没有获取到数据
         }
         let result = JSON.parse(JSON.stringify(data));
@@ -59,13 +56,13 @@ router.get('/maps', (req, res) => {
                 "yamlFileName": ""
             };
             message.push(jsonData)
-            // jsonObj["data"].push(jsonData)
         }
-        jsonObj["data"] = message;
-        jsonObj["errorCode"] = "";
-        jsonObj["msg"] = "successed";
-        jsonObj["successed"] = true;
-        res.send(JSON.stringify(jsonObj));
+        res.json({
+            "data": message,
+            "errorCode": "",
+            "msg": "successed",
+            "successed": true
+          });
     })
 
 })

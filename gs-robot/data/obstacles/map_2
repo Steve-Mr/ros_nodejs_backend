@@ -1,0 +1,209 @@
+{
+   "carpets": {
+      "circles": [
+         {
+            "x": 72,
+            "y": 107,
+            "r": "0.5"
+         }
+      ],
+      "lines": [],
+      "polygons": [],
+      "polylines": [],
+      "rectangles": []
+   },
+   "carpetsWorld": {
+      "circles": [],
+      "lines": [],
+      "polygons": [],
+      "polylines": [],
+      "rectangles": []
+   },
+   "decelerations": {
+      "circles": [],
+      "lines": [
+         [
+            {
+               "x": 11,
+               "y": 59
+            },
+            {
+               "x": 12,
+               "y": 56
+            }
+         ]
+      ],
+      "polygons": [
+         [
+            {
+               "x": 33,
+               "y": 70
+            },
+            {
+               "x": 36,
+               "y": 71
+            },
+            {
+               "x": 36,
+               "y": 68
+            },
+            {
+               "x": 36,
+               "y": 66
+            },
+            {
+               "x": 34,
+               "y": 65
+            },
+            {
+               "x": 33,
+               "y": 67
+            },
+            {
+               "x": 32,
+               "y": 69
+            }
+         ]
+      ],
+      "polylines": [],
+      "rectangles": []
+   },
+   "decelerationsWorld": {
+      "circles": [],
+      "lines": [],
+      "polygons": [],
+      "polylines": [],
+      "rectangles": []
+   },
+   "displays": {
+      "circles": [],
+      "lines": [],
+      "polygons": [
+         [
+            {
+               "x": 87,
+               "y": 50
+            },
+            {
+               "x": 89,
+               "y": 50
+            },
+            {
+               "x": 90,
+               "y": 48
+            },
+            {
+               "x": 90,
+               "y": 46
+            },
+            {
+               "x": 88,
+               "y": 46
+            },
+            {
+               "x": 87,
+               "y": 46
+            },
+            {
+               "x": 86,
+               "y": 48
+            },
+            {
+               "x": 85,
+               "y": 50
+            },
+            {
+               "x": 84,
+               "y": 53
+            },
+            {
+               "x": 85,
+               "y": 57
+            },
+            {
+               "x": 86,
+               "y": 57
+            }
+         ]
+      ],
+      "polylines": [],
+      "rectangles": [
+         [
+            {
+               "x": 89,
+               "y": 28
+            },
+            {
+               "x": 94,
+               "y": 23
+            }
+         ]
+      ]
+   },
+   "displaysWorld": {
+      "circles": [],
+      "lines": [],
+      "polygons": [],
+      "polylines": [],
+      "rectangles": []
+   },
+   "highlight": {
+      "circles": [],
+      "lines": [],
+      "polygons": [],
+      "polylines": [],
+      "rectangles": []
+   },
+   "highlightWorld": {
+      "circles": [],
+      "lines": [],
+      "polygons": [],
+      "polylines": [],
+      "rectangles": []
+   },
+   "obstacles": {
+      "circles": [],
+      "lines": [],
+      "polygons": [],
+      "polylines": [],
+      "rectangles": [
+         [
+            {
+               "x": 75,
+               "y": 74
+            },
+            {
+               "x": 80,
+               "y": 70
+            }
+         ]
+      ]
+   },
+   "obstaclesWorld": {
+      "circles": [],
+      "lines": [],
+      "polygons": [],
+      "polylines": [],
+      "rectangles": []
+   },
+   "slopes": {
+      "circles": [
+         {
+            "x": 86,
+            "y": 19,
+            "r": "1"
+         }
+      ],
+      "lines": [],
+      "polygons": [],
+      "polylines": [],
+      "rectangles": []
+   },
+   "slopesWorld": {
+      "circles": [],
+      "lines": [],
+      "polygons": [],
+      "polylines": [],
+      "rectangles": []
+   }
+}

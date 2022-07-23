@@ -1,4 +1,6 @@
 CREATE DATABASE robot;
+USE robot;
+
 CREATE TABLE IF NOT EXISTS map_info(
     id INT UNSIGNED AUTO_INCREMENT,
     sort INT NOT NULL,
@@ -12,3 +14,13 @@ CREATE TABLE IF NOT EXISTS map_info(
 
 INSERT INTO map_info VALUES (1, 1, 1, 'map_1', 'path_1', '2022-07-20', 'user0');
 INSERT INTO map_info VALUES (2, 2, 2, 'map_2', 'path_2', '2022-07-20', 'user0');
+
+CREATE TABLE IF NOT EXISTS points_list(
+    angle FLOAT NOT NULL,
+    gridX INT NOT NULL,
+    gridY INT NOT NULL,
+    map_name VARCHAR(20) NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    type INT NOT NULL,
+    PRIMARY KEY(name)
+);

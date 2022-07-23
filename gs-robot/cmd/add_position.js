@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const database = require('../database')
 
 const app = express();
 
@@ -20,13 +21,37 @@ app.post('/add_position', (req, res) => {
 
   console.log("position_name = " + position_name + " type = " + type);
   console.log(req.body)
-  res.status(200);
-  res.json(
-    {
-      "data": "",
-      "errorCode": "",
-      "msg": "successed",
-      "successed": true
-    })
+
+  let point = req.body;
+  let insert_sql = 'INSERT INTO points_list SET ?';
+  let values = ({
+    angle: point.angle,
+    gridX: point.gridX,
+    gridY: point.gridY,
+    map_name: point.mapName,
+    name: point.name,
+    type: point.type
+})
+
+    let query = database.query(insert_sql, values,(err, data) => {
+    console.log(query.sql)
+    if (err) {
+      res.json({
+        "data": "{}",
+        "errorCode": "",
+        "msg": "failed",
+        "successed": false
+      });
+      return console.log(err.message);
+    }
+    res.status(200);
+    res.json(
+      {
+        "data": "",
+        "errorCode": "",
+        "msg": "successed",
+        "successed": true
+      })
+  })
 });
 module.exports = app

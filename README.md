@@ -54,3 +54,36 @@ You should get response like
     ```json
     {"data":{"linear":{"x":0,"y":0,"z":0},"angular":{"x":0,"y":0,"z":0}},"errorCode":"","msg":"successed","successed":true}
     ```
+
+## Database and Tables
+This project currently is based on mysql. 
+Given below are description about tables we are using.
+
+### map_info:
+```
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| id          | int unsigned | NO   | PRI | NULL    | auto_increment |
+| sort        | int          | NO   |     | NULL    |                |
+| car_code    | int          | NO   |     | NULL    |                |
+| map_name    | varchar(20)  | NO   |     | NULL    |                |
+| path_name   | varchar(50)  | YES  |     | NULL    |                |
+| update_time | varchar(15)  | YES  |     | NULL    |                |
+| updator     | varchar(10)  | YES  |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+```
+### points_list
+```
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| angle    | float       | NO   |     | NULL    |       |
+| gridX    | int         | NO   |     | NULL    |       |
+| gridY    | int         | NO   |     | NULL    |       |
+| map_name | varchar(20) | NO   |     | NULL    |       |
+| name     | varchar(50) | NO   | PRI | NULL    |       |
+| type     | int         | NO   |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+
+```

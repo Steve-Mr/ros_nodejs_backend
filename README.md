@@ -1,31 +1,32 @@
 # Ros NodeJS Backend
 
-## Setup Tutorial
+## 初始化项目
 
-### Install Nodejs & npm
+### 安装 Nodejs 和 npm
 
 Ubuntu: ```sudo apt install nodejs npm```  
-The command may vary on different distros.
 
-### Setup Ros Package
+不同的发行版可能需要使用不同的命令，详情请参阅各发行版仓库或 Node.js [下载页](https://nodejs.org/zh-cn/download/)。
 
-In your ros workspace, create a package as server. (Name it as whatever you want)
+### 创建 ROS 功能包
+
+在 ROS 工作环境中创建功能包用作 Node.js 服务器，名称不限。  
 
 ```shell
 cd <path-to-your-workspace>/src
 catkin_create_pkg apiserver
 ```
 
-#### Configure your package.
+#### 配置环境
 
-First initialize npm in your package.
+在前面创建的包中初始化 npm。  
 
 ```shell
 cd <path-to-your-workspace>/src/apiserver
-npm init -y # initialize the npm
-```
+npm init -y
+```  
 
-Then install necessary library in the server package you created.
+安装运行项目需要的 npm 包。  
 
 ```shell
 npm install rosnodejs
@@ -36,44 +37,41 @@ npm install image-size
 npm install cors
 ```
 
-For more information about rosnojejs, check their [official repo](https://github.com/RethinkRobotics-opensource/rosnodejs).
+关于 rosnodejs 的更多信息，请查看其[官方仓库](https://github.com/RethinkRobotics-opensource/rosnodejs)。  
 
-### Clone this Project
+### 克隆项目
 
-In your server package create the scripts folder ```mkdir scripts && cd $_```.
+在前面创建的功能包中创建 scripts 文件夹 ```mkdir scripts && cd $_```。  
 
-Clone this project ```git clone https://github.com/Steve-Mr/ros_nodejs_backend.git .```.
-(The "." after git repo url is nessery which represents the destination directory.)
+克隆仓库 ```git clone https://github.com/Steve-Mr/ros_nodejs_backend.git .```
+或复制文件到 scripts 文件夹中。  
+(克隆命令中末尾的 "." 符号是必要的，表示克隆到当前目录。)  
 
-## Test
+## 测试可用性
 
-This project has only been tested in simulated environment with specified config, to run it with your robot may needs some configuration.  
+注意：由于目前使用的模拟环境，不同环境下细节配置可能不同，在运行之前可能需要根据当前环境进行调整。  
 
-1. Setup and run Your Robot
+1. 配置并运行机器人。  
 
-2. Start server.
+2. 运行服务器。  
     
-    In ```scripts``` folder run ```node server.js``` .  
+    在 scripts 文件夹下运行 ```node server.js``` 。  
     
-    We will use rostopic ```/cmd_vel``` for test, which contains the robot's realtime data, please modify the topic according to the actual situation.
-    
-    Topic name in ```scripts/gs-robot/real_time_data/cmd_vel.js``` .  
+    这里的测试将会订阅 /cmd_vel 话题，该话题包含机器人运行中的实时数据，可根据具体情况对话题名称进行修改，修改位置在 ```scripts/gs-robot/real_time_data/cmd_vel.js``` 中。  
 
-3. Access data through GET request
+3. 通过 GET 请求访问数据。  
     
-    Open your browser and go to ```localhost:8080/gs-robot/real_time_data/cmd_vel``` .  
+    浏览器访问 ```localhost:8080/gs-robot/real_time_data/cmd_vel``` 。  
 
-    You should get response like 
+    预期结果如下  
 
     ```json
     {"data":{"linear":{"x":0,"y":0,"z":0},"angular":{"x":0,"y":0,"z":0}},"errorCode":"","msg":"successed","successed":true}
     ```
 
-## Database and Tables
+## 数据库
 
-This project currently is based on mysql. 
-
-Given below are description about tables we are using.
+这里使用 mysql 数据库，下面给出数据库中表的描述。   
 
 ### map_info:
 ```

@@ -23,35 +23,52 @@ app.post('/add_position', (req, res) => {
   console.log(req.body)
 
   let point = req.body;
+  let query_sql = 'SELECT id FROM map_info WHERE map_name = ?';
   let insert_sql = 'INSERT INTO points_list SET ?';
-  let values = ({
-    angle: point.angle,
-    gridX: point.gridX,
-    gridY: point.gridY,
-    map_name: point.mapName,
-    name: point.name,
-    type: point.type
-})
-
-    let query = database.query(insert_sql, values,(err, data) => {
-    console.log(query.sql)
-    if (err) {
-      res.json({
-        "data": "{}",
-        "errorCode": "",
-        "msg": "failed",
-        "successed": false
-      });
-      return console.log(err.message);
+  new Promise(function(resolve, reject){
+    database.query(query_sql, [point.mapName], (err, data) => {
+      if (err) {
+        res.json({
+          "data": "{}",
+          "errorCode": "",
+          "msg": "failed",
+          "successed": false
+        });
+        return console.log(err.message);
     }
-    res.status(200);
-    res.json(
-      {
-        "data": "",
-        "errorCode": "",
-        "msg": "successed",
-        "successed": true
-      })
+    resolve(data)
   })
+  }).then(function(data){
+    let values = ({
+      angle: point.angle,
+      gridX: point.gridX,
+      gridY: point.gridY,
+      map_id: parseInt(data[0].id),
+      name: point.name,
+      type: point.type
+  })
+  
+      let query = database.query(insert_sql, values,(err, data) => {
+      console.log(query.sql)
+      if (err) {
+        res.json({
+          "data": "{}",
+          "errorCode": "",
+          "msg": "failed",
+          "successed": false
+        });
+        return console.log(err.message);
+      }
+      res.status(200);
+      res.json(
+        {
+          "data": "",
+          "errorCode": "",
+          "msg": "successed",
+          "successed": true
+        })
+    })
+  })
+  
 });
 module.exports = app

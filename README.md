@@ -81,7 +81,7 @@ npm install cors
 | id          | int unsigned | NO   | PRI | NULL    | auto_increment |
 | sort        | int          | NO   |     | NULL    |                |
 | car_code    | int          | NO   |     | NULL    |                |
-| map_name    | varchar(20)  | NO   |     | NULL    |                |
+| map_name    | varchar(20)  | NO   | UNI | NULL    |                |
 | path_name   | varchar(50)  | YES  |     | NULL    |                |
 | update_time | varchar(15)  | YES  |     | NULL    |                |
 | updator     | varchar(10)  | YES  |     | NULL    |                |
@@ -94,20 +94,20 @@ updator：更新人
 
 ### 已标记点列表 points_list
 ```
-+----------+-------------+------+-----+---------+-------+
-| Field    | Type        | Null | Key | Default | Extra |
-+----------+-------------+------+-----+---------+-------+
-| angle    | float       | NO   |     | NULL    |       |
-| gridX    | int         | NO   |     | NULL    |       |
-| gridY    | int         | NO   |     | NULL    |       |
-| map_name | varchar(20) | NO   |     | NULL    |       |
-| name     | varchar(50) | NO   | PRI | NULL    |       |
-| type     | int         | NO   |     | NULL    |       |
-+----------+-------------+------+-----+---------+-------+
++--------+--------------+------+-----+---------+-------+
+| Field  | Type         | Null | Key | Default | Extra |
++--------+--------------+------+-----+---------+-------+
+| angle  | float        | NO   |     | NULL    |       |
+| gridX  | int          | NO   |     | NULL    |       |
+| gridY  | int          | NO   |     | NULL    |       |
+| map_id | int unsigned | NO   | MUL | NULL    |       |
+| name   | varchar(50)  | NO   | PRI | NULL    |       |
+| type   | int          | NO   |     | NULL    |       |
++--------+--------------+------+-----+---------+-------+
 ```
 angle：偏向角  
 gridX/gridY：栅格地图上坐标   
-map_name：点所在地图名称  
+map_id：点所在地图 ID，客户端提交的信息中为地图名称，需要在服务端转换为地图 ID 再进行存储。  
 name：点的名称  
 type：点的类型，参照 API 文档中 1.2.14 地图点数据中类型定义  
 
@@ -143,3 +143,27 @@ type：点的类型，参照 API 文档中 1.2.14 地图点数据中类型定义
 ├── robot.sql                                   # 建议数据库命令
 └── server.js                                   # 注册服务器，处理对路径 /gs-robot/ 的访问请求
 ```
+
+## 计划实现 API 列表
+
+- [ ] 1.2.14.地图点数据 ```/gs-robot/data/positions?map_name=?&type=?```	
+- [x] 1.2.15.记录点	```/gs-robot/cmd/add_position?position_name=?&type=? ```
+- [x] 1.2.16.删除点	```/gs-robot/cmd/delete_position?map_name=?&position_name=?```
+- [ ] 1.2.17.重命名点 ```/gs-robot/cmd/rename_position?map_name=?&origin_name=?&new_name=?```	 
+- [ ] 1.3.1.开始扫描地图 ```/gs-robot/cmd/start_scan_map?map_name=?&ype=?```	
+- [ ] 1.3.2.结束扫描并保存地图(同步) ```/gs-robot/cmd/start_scan_map?map_name=?&ype=?```	
+- [ ] 1.3.3.取消扫描不保存地图 ```/gs-robot/cmd/cancel_scan_map ```
+- [ ] 1.3.4 结束扫描保存地图(异步)//推荐使用 ```/gs-robot/cmd/async_stop_scan_map ```	
+- [ ] 1.3.5.异步结束扫地图是否完成 ```/gs-robot/cmd/is_stop_scan_finished ```	
+- [ ] 1.3.6. 获取实时扫地图图片png ```/gs-robot/real_time_data/scan_map_png```	
+- [x] 1.3.7. 获取地图图片png ```/gs-robot/data/map_png?map_name=?```	
+- [x] 1.3.8.获取地图列表 ```/gs-robot/data/maps```	
+- [ ] 1.3.13.编辑地图 ```/gs-robot/cmd/edit_map?map_name=?&operation_type=?```	
+- [ ] 1.4.1.加载地图 ```/gs-robot/cmd/load_map?map_name=? ```	
+- [ ] 1.4.10. 获取初始化点列表 ```/gs-robot/data/positions?map_name=?&type=0```	
+- [ ] 1.5.1. 导航到导航点 ```/gs-robot/cmd/position/navigate?map_name=?&position_name=?```	
+- [ ] 1.5.3.暂停导航 ```/gs-robot/cmd/pause_navigate```	
+- [ ] 1.5.4.恢复导航 ```/gs-robot/cmd/resume_navigate```	
+- [ ] 1.5.5.取消导航 ```/gs-robot/cmd/cancel_navigate```	
+- [x] 1.9.1. 获取虚拟墙数据 ```/gs-robot/data/virtual_obstacles?map_name=?```	
+- [x] 1.9.2.添加或更新虚拟墙数据 ```/gs-robot/cmd/update_virtual_obstacles?map_name=?&obstacle_name=?```

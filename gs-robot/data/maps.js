@@ -3,7 +3,6 @@
 const express = require('express');
 const yaml = require('js-yaml');
 const fs = require('fs')
-const mysql = require('mysql')
 const sizeOf = require('image-size')
 
 const db = require('../database')

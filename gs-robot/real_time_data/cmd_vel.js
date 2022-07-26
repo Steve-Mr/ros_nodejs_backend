@@ -3,7 +3,6 @@
 const express = require('express');
 const router = express.Router();
 
-
 router.get('/cmd_vel', (req, res) => {
 
   const rosnodejs = require('rosnodejs');

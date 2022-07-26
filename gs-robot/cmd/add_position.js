@@ -44,6 +44,7 @@ app.post('/add_position', (req, res) => {
       gridX: point.gridX,
       gridY: point.gridY,
       map_id: parseInt(data[0].id),
+      map_name: point.mapName,
       name: point.name,
       type: point.type
   })

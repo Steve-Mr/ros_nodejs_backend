@@ -154,7 +154,7 @@ type：点的类型，参照 API 文档中 1.2.14 地图点数据中类型定义
 - [x] 1.2.14 地图点数据 ```/gs-robot/data/positions?map_name=?&type=?```	
 - [x] 1.2.15 记录点	```/gs-robot/cmd/add_position?position_name=?&type=? ```
 - [x] 1.2.16 删除点	```/gs-robot/cmd/delete_position?map_name=?&position_name=?```
-- [ ] 1.2.17 重命名点 ```/gs-robot/cmd/rename_position?map_name=?&origin_name=?&new_name=?```	 
+- [x] 1.2.17 重命名点 ```/gs-robot/cmd/rename_position?map_name=?&origin_name=?&new_name=?```	 
 - [ ] 1.3.1  开始扫描地图 ```/gs-robot/cmd/start_scan_map?map_name=?&ype=?```	
 - [ ] 1.3.2  结束扫描并保存地图(同步) ```/gs-robot/cmd/start_scan_map?map_name=?&ype=?```	
 - [ ] 1.3.3  取消扫描不保存地图 ```/gs-robot/cmd/cancel_scan_map ```

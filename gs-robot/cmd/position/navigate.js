@@ -4,6 +4,8 @@ const router = express.Router()
 const database = require('../../database')
 const util = require('../../util')
 
+const pos = {}
+
 router.get('/position/navigate', (req, res) => {
     let map_name, position_name;
 
@@ -52,9 +54,13 @@ router.get('/position/navigate', (req, res) => {
                  */
 
                 message.goal.target_pose.header.frame_id = 'map';
-                message.goal.target_pose.pose.position.x = data[0].gridX;
-                message.goal.target_pose.pose.position.y = data[0].gridY;
+                message.goal.target_pose.pose.position.x = 20//data[0].gridX;
+                message.goal.target_pose.pose.position.y = 24//data[0].gridY;
                 message.goal.target_pose.pose.orientation.w = 1;
+
+                pos.x = 20//data[0].gridX;
+                pos.y = 24//data[0].gridY;
+                
 
                 const ac = new rosnodejs.SimpleActionClient({
                     nh,
@@ -69,6 +75,8 @@ router.get('/position/navigate', (req, res) => {
                         ac.sendGoalAndWait(message.goal, util.timeout(util.default_timeout), util.timeout(util.default_timeout))
                             .then(() => {
                                 if (ac.getState() === 'SUCCEEDED') {
+                                    delete pos.x;
+                                    delete pos.y;
                                     res.json(util.successed_json)
                                 } else {
                                     res.json(util.error_json)
@@ -79,4 +87,15 @@ router.get('/position/navigate', (req, res) => {
         })
 })
 
-module.exports = router
+function clearPos(){
+    if(Object.keys(pos).length){
+        delete pos.x;
+        delete pos.y;
+    }
+
+}
+module.exports = {
+    router,
+    pos: pos,
+    clearPos: clearPos
+}

@@ -5,6 +5,7 @@ const database = require('../../database')
 const util = require('../../util')
 
 const pos = {}
+const state = {code: "UNKNOWN"}
 
 router.get('/position/navigate', (req, res) => {
     let map_name, position_name;
@@ -79,7 +80,11 @@ router.get('/position/navigate', (req, res) => {
                                     delete pos.y;
                                     res.json(util.successed_json)
                                 } else {
-                                    res.json(util.error_json)
+                                    let msg = util.error_json;
+                                    msg.errorCode = state.code;
+                                    state.code = 'UNKNOWN'
+                                    res.json(msg)
+                                    return
                                 }
                             })
                     })
@@ -97,5 +102,6 @@ function clearPos(){
 module.exports = {
     router,
     pos: pos,
-    clearPos: clearPos
+    clearPos: clearPos,
+    state:state
 }

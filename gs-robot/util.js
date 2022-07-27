@@ -24,4 +24,4 @@ const default_timeout = 180;
 module.exports.error_json = error_json;
 module.exports.successed_json = successed_json;
 module.exports.timeout = timeout;
-module.exports.default_timeout = 180;
+module.exports.default_timeout = default_timeout;

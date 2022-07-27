@@ -7,5 +7,6 @@ app.use('/cmd', require('./cmd/update_virtual_obstacles'))
 app.use('/cmd', require('./cmd/position/navigate.js').router)
 app.use('/cmd', require('./cmd/pause_navigate'))
 app.use('/cmd', require('./cmd/resume_navigate'))
+app.use('/cmd', require('./cmd/cancel_navigate'))
 
 module.exports = app

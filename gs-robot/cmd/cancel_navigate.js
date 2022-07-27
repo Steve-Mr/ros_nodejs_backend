@@ -4,7 +4,7 @@ const router = express.Router()
 const util = require('../util')
 const navigate = require('./position/navigate')
 
-router.get('/pause_navigate', (req, res) => {
+router.get('/cancel_navigate', (req, res) => {
     rosnodejs.initNode('navigation_node', { onTheFly: true }).then(() => {
         const nh = rosnodejs.nh;
         const ac = new rosnodejs.SimpleActionClient({
@@ -13,10 +13,12 @@ router.get('/pause_navigate', (req, res) => {
             // 虽然不知道为什么，但是在处理过程中 rosnodejs 会自动在 type 结尾添加 ActionGoal
             actionServer: '/move_base'
         })
-        navigate.state.code = "PAUSED"
+        navigate.state.code = "CANCELED"
         ac.waitForServer()
         .then(() => {
             ac.cancelAllGoals()
+            navigate.clearPos();
+            navigate.isCanceled = true;
             res.json(util.successed_json)
         })
     })

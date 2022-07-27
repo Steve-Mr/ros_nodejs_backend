@@ -1,82 +1,82 @@
 const express = require('express')
-const { now } = require('moment')
 const rosnodejs = require('rosnodejs')
 const router = express.Router()
+const database = require('../../database')
+const util = require('../../util')
 
 router.get('/position/navigate', (req, res) => {
-    console.log('position navigate')
+    let map_name, position_name;
+
+    if (typeof req.query.map_name != 'undefined' &&
+        typeof req.query.position_name != undefined &&  // 是否包含了参数
+        req.query.map_name && req.query.position_name) { // 参数是否有值
+        map_name = req.query.map_name;
+        position_name = req.query.position_name;
+    } else {
+        res.json(util.error_json)
+        return;
+    }
 
     new Promise(function (resolve, reject) {
-        rosnodejs.initNode('navigation_node', { onTheFly: true }).then(() => {
-            const nh = rosnodejs.nh;
-            const move_base_msgs = rosnodejs.require('move_base_msgs')
 
-            const geometry_msgs = rosnodejs.require('geometry_msgs')
+        let query_sql = "SELECT * FROM points_list WHERE name = ? AND map_name = ?"
 
-            // const goal = new geometry_msgs.msg.PoseStamped();
-            const goal = new move_base_msgs.msg.MoveBaseActionGoal();
-            /**
-             * {
-                header:
-                     { seq: 0, stamp: { secs: 0, nsecs: 0 }, frame_id: '' },
-                goal_id:  { stamp: { secs: 0, nsecs: 0 }, id: '' },
-                goal:
-                    { target_pose: { header: [Message], pose: [Message] } } }
-             */
-
-            // const time = require('Time')
-
-            console.log("======")
-            console.log(goal)
-            console.log("======")
-
-            goal.goal.target_pose.header.frame_id = 'map';
-            goal.goal.target_pose.pose.position.x = 11;
-            goal.goal.target_pose.pose.position.y = 27;
-            goal.goal.target_pose.pose.orientation.w = 1;
-            const ac = new rosnodejs.SimpleActionClient({
-                nh,
-                type: 'move_base_msgs/MoveBase',
-                // 虽然不知道为什么，但是在处理过程中 rosnodejs 会自动在 type 结尾添加 ActionGoal
-                actionServer: '/move_base'
-            })
-            ac.waitForServer()
-                .then(() => {
-                    console.log('connected');
-                    console.log(goal)
-                    ac.sendGoal(goal.goal)
-                })
+        database.query(query_sql, [position_name, map_name], (err, data) => {
+            if (err) {
+                res.json(util.error_json);
+                return console.log(err.message)
+            }
+            resolve(data)
         })
     })
+        .then(function (data) {
 
-    // new Promise(function (resolve, reject) {
-    //     rosnodejs.initNode('/navigate_to').then(() => {
-    //         const nh = rosnodejs.nh;
-    //         const pub = nh.advertise(
-    //             '/move_base_simple/goal',
-    //             'geometry_msgs/PoseStamped');
+            rosnodejs.initNode('navigation_node', { onTheFly: true }).then(() => {
+                const nh = rosnodejs.nh;
+                const move_base_msgs = rosnodejs.require('move_base_msgs')
 
 
-    //         const geometry_msgs = rosnodejs.require('geometry_msgs')
+                const message = new move_base_msgs.msg.MoveBaseActionGoal();
+                /**
+                 * {header:     
+                 *      {seq: 0, stamp: {secs: 0, nsecs: 0 }, frame_id: '' },
+                    goal_id:    
+                        {stamp: {secs: 0, nsecs: 0 }, id: '' },
+                    goal:
+                        {target_pose: { header: 
+                                            {seq: 0, stamp: { secs: 0, nsecs: 0 }, frame_id: '' }, 
+                                        pose: 
+                                            {position: { x: 0, y: 0, z: 0 },
+                                            orientation:{ x: 0, y: 0, z: 0, w: 0 } } } }
+                    MoveBaseActionGoal 消息的格式，这里只使用到 goal 部分。
+                 */
 
-    //         const goal = new geometry_msgs.msg.PoseStamped();
+                message.goal.target_pose.header.frame_id = 'map';
+                message.goal.target_pose.pose.position.x = data[0].gridX;
+                message.goal.target_pose.pose.position.y = data[0].gridY;
+                message.goal.target_pose.pose.orientation.w = 1;
 
-    //         goal.header.stamp = now;
-    //         goal.header.frame_id = 'map';
-    //         goal.pose.position.x = 15;
-    //         goal.pose.position.y = 25;
-    //         goal.pose.position.z = 0;
-    //         goal.pose.orientation.w = 1
-
-
-
-    //         pub.publish(goal)
-    //         console.log(goal)
-    //     })
-    // })
-    // .then(function(){
-    //     console.log("finished")
-    // })
+                const ac = new rosnodejs.SimpleActionClient({
+                    nh,
+                    type: 'move_base_msgs/MoveBase',
+                    // 虽然不知道为什么，但是在处理过程中 rosnodejs 会自动在 type 结尾添加 ActionGoal
+                    actionServer: '/move_base'
+                })
+                ac.waitForServer()
+                    .then(() => {
+                        console.log('connected');
+                        console.log(message)
+                        ac.sendGoalAndWait(message.goal, util.timeout(util.default_timeout), util.timeout(util.default_timeout))
+                            .then(() => {
+                                if (ac.getState() === 'SUCCEEDED') {
+                                    res.json(util.successed_json)
+                                } else {
+                                    res.json(util.error_json)
+                                }
+                            })
+                    })
+            })
+        })
 })
 
 module.exports = router

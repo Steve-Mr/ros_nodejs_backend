@@ -35,6 +35,7 @@ npm install mysql
 npm install js-yaml
 npm install image-size
 npm install cors
+npm install moment
 ```
 
 关于 rosnodejs 的更多信息，请查看其[官方仓库](https://github.com/RethinkRobotics-opensource/rosnodejs)。  
@@ -165,7 +166,7 @@ type：点的类型，参照 API 文档中 1.2.14 地图点数据中类型定义
 - [ ] 1.3.13 编辑地图 ```/gs-robot/cmd/edit_map?map_name=?&operation_type=?```	
 - [ ] 1.4.1  加载地图 ```/gs-robot/cmd/load_map?map_name=? ```	
 - [ ] 1.4.10 获取初始化点列表 ```/gs-robot/data/positions?map_name=?&type=0```	
-- [ ] 1.5.1  导航到导航点 ```/gs-robot/cmd/position/navigate?map_name=?&position_name=?```	
+- [x] 1.5.1  导航到导航点 ```/gs-robot/cmd/position/navigate?map_name=?&position_name=?```	
 - [ ] 1.5.3  暂停导航 ```/gs-robot/cmd/pause_navigate```	
 - [ ] 1.5.4  恢复导航 ```/gs-robot/cmd/resume_navigate```	
 - [ ] 1.5.5  取消导航 ```/gs-robot/cmd/cancel_navigate```	

@@ -19,7 +19,7 @@ const correct={"type":"0102","vehid": "000001",   "taskid":"XXX","action":"ok", 
   let p = new Promise(function(resolve, reject){
   rosnodejs.initNode('/my_node').then(() => {
   const nh = rosnodejs.nh;
-  const sub = nh.subscribe('/move_base_node/current_goal', '#!/usr/bin/env node
+  const sub = nh.subscribe('/move_base_node/current_goal', '#!/usr/bin/env node')
 
 const express = require('express');
 const router = express.Router();

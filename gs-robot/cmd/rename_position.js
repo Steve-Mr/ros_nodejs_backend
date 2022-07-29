@@ -1,18 +1,26 @@
+/**
+ * 1.2.17 重命名点
+ * 
+ * GET 请求　/gs-robot/cmd/rename_position?map_name=?&origin_name=?&new_name=?
+ */
 const express = require('express')
+const cors = require('cors')
+
 const database = require('../database')
 const util = require('../util');
 
-const router = express.Router();
+const app = express();
 
-router.get('/rename_position', (req, res) => {
+app.options('*', cors())
+app.use(cors())
+
+app.get('/rename_position', (req, res) => {
 
     let map_name, origin_name, new_name;
 
     if (typeof req.query.map_name != 'undefined' &&
         typeof req.query.origin_name != 'undefined' &&
-        typeof req.query.new_name != 'undefined' && // 是否包含了参数
-        req.query.map_name && req.query.origin_name &&
-        req.query.new_name) { // 参数是否有值
+        typeof req.query.new_name != 'undefined' ){ // 是否包含了参数
         map_name = req.query.map_name;
         origin_name = req.query.origin_name;
         new_name = req.query.new_name;
@@ -32,5 +40,5 @@ router.get('/rename_position', (req, res) => {
     })
 })
 
-module.exports = router;
+module.exports = app
 

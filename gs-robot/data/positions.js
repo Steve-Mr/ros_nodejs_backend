@@ -1,13 +1,25 @@
+/**
+ * 1.2.14 地图点数据
+ * 
+ * GET请求　/gs-robot/data/positions?map_name=?&type=?
+ * 
+ * type参数不传，默认返回所有点，传type则返回该类型的点
+ * 
+ * 目前没有对世界坐标系（worldPose）进行处理
+ */
 const express = require('express')
 const database = require('../database')
 const moment = require('moment')
+const util = require('../util')
 
 const router = express.Router();
 
 router.get('/positions', (req, res) => {
     let map_name = req.query.map_name
+    // 若没有传入 type 值则 type 值为 9999
     let type = req.query.type ? req.query.type : 9999
     let sql, params;
+    // type 值 9999 则返回所有类型的点
     if (type === 9999) {
         sql = 'SELECT * FROM points_list WHERE map_name = ?';
         params = [map_name];
@@ -18,12 +30,7 @@ router.get('/positions', (req, res) => {
 
     database.query(sql, params, (err, data) => {
         if (err) {
-            res.json({
-                "data": "{}",
-                "errorCode": "",
-                "msg": "failed",
-                "successed": false
-            });
+            res.json(util.error_json);
             return console.log(err.message);
         }
         let points_data = []
@@ -56,12 +63,9 @@ router.get('/positions', (req, res) => {
                 })
             }
         }
-        res.json({
-            "data": points_data,
-            "errorCode": "",
-            "msg": "successed",
-            "successed": true
-        });
+        let response_json = util.successed_json
+        response_json.data = points_data
+        res.json(response_json);
     })
 })
 

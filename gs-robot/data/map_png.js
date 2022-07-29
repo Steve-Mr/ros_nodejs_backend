@@ -1,4 +1,11 @@
-#!/usr/bin/env node
+/**
+ * 1.3.7 获取地图图片 png
+ * 
+ * GET 请求　/gs-robot/data/map_png?map_name=?
+ * 
+ * 返回 /gs-robot/data/maps 中的对应地图 png（代码中使用了相对地址）
+ * 
+ */
 
 const express = require('express');
 const router = express.Router();

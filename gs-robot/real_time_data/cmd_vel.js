@@ -1,4 +1,7 @@
-#!/usr/bin/env node
+/**
+ * 用于获取小车运行状态
+ * 
+ */
 
 const express = require('express');
 const router = express.Router();

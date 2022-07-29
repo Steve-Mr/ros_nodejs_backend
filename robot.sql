@@ -1,5 +1,3 @@
-USE robot;
-
 CREATE TABLE IF NOT EXISTS map_info(
     id INT UNSIGNED AUTO_INCREMENT,
     sort INT NOT NULL,

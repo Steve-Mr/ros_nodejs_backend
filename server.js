@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 
 app.use('/gs-robot', require('./gs-robot/real_time_data'))
-// 路由器注册，受到 /gs-robot 时，启用 real_time_data 路由
+// 路由器注册，收到请求，启用对应路由
 app.use('/gs-robot', require('./gs-robot/data'))
 app.use('/gs-robot', require('./gs-robot/cmd'))
 

@@ -1,11 +1,19 @@
-#!/usr/bin/env node
+/**
+ * 1.3.8 获取地图列表
+ * 
+ * GET 请求 ```/gs-robot/data/maps```
+ * 
+ * 查询 map_info 表中所有数据
+ * xxxFileName 字段返回均为空（目前没有使用场景）
+ */
 
 const express = require('express');
 const yaml = require('js-yaml');
 const fs = require('fs')
-const sizeOf = require('image-size')
+const sizeOf = require('image-size') // 用来获取地图图片大小
 
 const db = require('../database')
+const util = require('../util')
 
 const router = express.Router();
 
@@ -14,22 +22,12 @@ router.get('/maps', (req, res) => {
 
     db.query('select * from map_info', (err, data) => {
         if (err) {
-            res.json({
-                "data": "{}",
-                "errorCode": "",
-                "msg": "failed",
-                "successed": false
-            });
+            res.json(util.error_json);
 
             return console.log(err.message); // 连接失败
         }
         if (data.length === 0) {
-            res.json({
-                "data": "",
-                "errorCode": "",
-                "msg": "successed",
-                "successed": true
-              });
+            res.json(util.successed_json);
             return console.log('数据为空'); // 数据长度为0 则没有获取到数据
         }
         let result = JSON.parse(JSON.stringify(data));
@@ -56,12 +54,10 @@ router.get('/maps', (req, res) => {
             };
             message.push(jsonData)
         }
-        res.json({
-            "data": message,
-            "errorCode": "",
-            "msg": "successed",
-            "successed": true
-          });
+        let json = util.successed_json
+        json.data = message
+        console.log(json)
+        res.json(json);
     })
 
 })

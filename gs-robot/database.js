@@ -1,3 +1,6 @@
+/**
+ * 用于连接数据库
+ */
 const mysql = require('mysql')
 
 const db = mysql.createPool({

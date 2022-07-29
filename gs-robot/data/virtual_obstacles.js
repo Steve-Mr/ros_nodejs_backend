@@ -1,11 +1,54 @@
-const { json } = require('express');
+/**
+ * 1.9.1 获取虚拟墙数据
+ * 
+ * GET 请求 /gs-robot/data/virtual_obstacles?map_name=?
+ * 
+ * response
+ * {
+    "data": {
+        "carpets":{},       // 地毯
+        "carpetsWorld":{},
+        "decelerations":{}, // 减速
+        "decelerationsWorld":{}, 
+        "displays":{},
+        "displaysWorld":{},
+        "highlight":{},     // 计划用作上坡
+        "highlightWorld":{},
+        "obstacles":{},     // 障碍物
+        "obstaclesWorld":{},
+        "slopes":{},        // 下坡
+        "slopesWorld":{},
+    },
+    "errorCode": "",
+    "msg": "successed",
+    "successed": true
+  }
+
+  目前不考虑 xxxWorld 数据的记录和返回（均为空值）
+
+  具体每个类型中包含的 json 对象
+
+  {
+    "circles": [],    # 包含格式为 {x, y, r} （r 为半径）的坐标列表
+    "lines": [],      # 包含数个 json array（即 []），每个 array 中包含起点和终点坐标 {x, y}
+    "polygons": [],   # 包含数个 json array，每个 array 中包含数个顶点 {x, y}
+    "polylines": [],  # 包含数个 json array，每个 array 中包含数个顶点 {x, y}
+    "rectangles": []  # 包含数个 json array, 每个 array 中包含一条斜对角线上两个顶点坐标 {x, y}。
+                      客户端在根据这两个点确定一个方形时认为方形的长和宽均平行于坐标轴/地图图片的长和宽。              
+  }
+ */
 const express = require('express')
 const fs = require('fs')
 const path = require('path')
+const util = require('../util')
 
 const router = express.Router();
 
 router.get('/virtual_obstacles', (req, res) => {
+  if(!req.query.map_name) {
+    res.json(util.error_json)
+    return 
+  }
     let map_name = req.query.map_name;
     console.log(path.join(__dirname, 'obstacles', map_name));
     fs.readFile(
@@ -13,30 +56,19 @@ router.get('/virtual_obstacles', (req, res) => {
         'utf-8',
         (err, data) => {
             if (err) {
-                res.json({
-                  "data": "{}",
-                  "errorCode": "",
-                  "msg": "failed",
-                  "successed": false
-                });
+                res.json(util.error_json);
                 return console.log(err.message);
               }
               res.status(200);
               let objs = "{}";
               if(data){
-                objs = data.toString();
+                objs = data.toString()
               }
-              res.json(
-                {
-                  "data": objs,
-                  "errorCode": "",
-                  "msg": "successed",
-                  "successed": true
-                })
+              let json = util.successed_json
+              json.data = objs
+              res.json(json)
         }
     )
-    // res.json({"data":{"carpets":{"circles":[],"lines":[],"polygons":[],"polylines":[],"rectangles":[]},"carpetsWorld":{"circles":[],"lines":[],"polygons":[],"polylines":[],"rectangles":[]},"decelerations":{"circles":[],"lines":[],"polygons":[],"polylines":[[{"x":6,"y":51},{"x":8,"y":52}]],"rectangles":[]},"decelerationsWorld":{"circles":[],"lines":[],"polygons":[],"polylines":[],"rectangles":[]},"displays":{"circles":[],"lines":[],"polygons":[],"polylines":[],"rectangles":[]},"displaysWorld":{"circles":[],"lines":[],"polygons":[],"polylines":[],"rectangles":[]},"highlight":{"circles":[],"lines":[],"polygons":[],"polylines":[],"rectangles":[]},"highlightWorld":{"circles":[],"lines":[],"polygons":[],"polylines":[],"rectangles":[]},"obstacles":{"circles":[{"x":72,"y":107,"r":5},{"x":87,"y":66,"r":2.5},{"x":77,"y":79,"r":2.5}],"lines":[],"polygons":[],"polylines":[[{"x":106,"y":51},{"x":108,"y":52}],[{"x":9,"y":59},{"x":13,"y":57},{"x":19,"y":59},{"x":18,"y":63}]],"rectangles":[[{"x":86,"y":35},{"x":93,"y":26}]]},"obstaclesWorld":{"circles":[],"lines":[],"polygons":[],"polylines":[[{"x":-1.1227102611213926,"y":0.042556944116949325},{"x":-5.0227103192359213,"y":-2.0074430864304311}],[{"x":50.1772898625582453,"y":-2.6074430953711278},{"x":8.8772898878902193,"y":-4.457443122938276}]],"rectangles":[]},"slopes":{"circles":[],"lines":[],"polygons":[],"polylines":[],"rectangles":[]},"slopesWorld":{"circles":[],"lines":[],"polygons":[],"polylines":[],"rectangles":[]}},"errorCode":"","msg":"successed","successed":true})
-    // res.json({"data":{},"errorCode":"","msg":"successed","successed":true})
 })
 
 module.exports = router;

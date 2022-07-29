@@ -50,25 +50,52 @@ npm install moment
 
 ## 测试可用性
 
-注意：由于目前使用的模拟环境，不同环境下细节配置可能不同，在运行之前可能需要根据当前环境进行调整。  
+注意：由于目前使用的模拟环境，不同环境下细节配置可能不同，在运行之前可能需要根据当前环境进行调整。 
 
-1. 配置并运行机器人。  
+- 测试服务器和数据库连接 
 
-2. 运行服务器。  
-    
-    在 scripts 文件夹下运行 ```node server.js``` 。  
-    
-    这里的测试将会订阅 /cmd_vel 话题，该话题包含机器人运行中的实时数据，可根据具体情况对话题名称进行修改，如有的项目中该话题为 /robot_base_velocity_controller/cmd_vel，修改位置在 ```scripts/gs-robot/real_time_data/cmd_vel.js``` 中。  
+    1. 配置数据库
 
-3. 通过 GET 请求访问数据。  
-    
-    浏览器访问 ```localhost:8080/gs-robot/real_time_data/cmd_vel``` 。  
+        登录 mysql 创建 robot 数据库、使用该数据库并导入 sql 文件：
+        ```sql
+        CREATE DATABASE robot;
+        USE robot;
+        source /path/to/sql/file/robot.sql
+        ``` 
+        /path/to/sql/file/ 需要根据自己目录位置进行调整，且 /path/to/sql/file/robot.sql 前后不需要添加引号。  
 
-    预期结果如下  
+    2. 运行服务器。  
+        
+        在 scripts 文件夹下运行 ```node server.js``` 。  
 
-    ```json
-    {"data":{"linear":{"x":0,"y":0,"z":0},"angular":{"x":0,"y":0,"z":0}},"errorCode":"","msg":"successed","successed":true}
-    ```
+    3. 通过 GET 请求访问数据。  
+
+        浏览器访问 ```localhost:8080/gs-robot/data/maps```。  
+          
+        预期结果：
+        ```json
+        [{"createdAt":"2016-08-11 04:08:30","dataFileName":"40dd8fcd-5e6d-4890-b620-88882d9d3977.data","id":0,"mapInfo":{"gridHeight":2048,"gridWidth":2048,"originX":-51.224998,"originY":-51.224998,"resolution":0.05},"name":"map_1","obstacleFileName":"","pgmFileName":"","pngFileName":"","yamlFileName":""},{"createdAt":"2016-08-11 04:08:30","dataFileName":"40dd8fcd-5e6d-4890-b620-88882d9d3977.data","id":0,"mapInfo":{"gridHeight":1344,"gridWidth":1152,"originX":-10,"originY":-10,"resolution":0.1},"name":"map_2","obstacleFileName":"","pgmFileName":"","pngFileName":"","yamlFileName":""}]
+        ```
+
+- 测试服务器和机器人连接
+
+    1. 配置并运行机器人。  
+
+    2. 运行服务器。  
+        
+        在 scripts 文件夹下运行 ```node server.js``` 。  
+        
+        这里的测试将会订阅 /cmd_vel 话题，该话题包含机器人运行中的实时数据，可根据具体情况对话题名称进行修改，如有的项目中该话题为 /robot_base_velocity_controller/cmd_vel，修改位置在 ```scripts/gs-robot/real_time_data/cmd_vel.js``` 中。  
+
+    3. 通过 GET 请求访问数据。  
+        
+        浏览器访问 ```localhost:8080/gs-robot/real_time_data/cmd_vel``` 。  
+
+        预期结果如下  
+
+        ```json
+        {"data":{"linear":{"x":0,"y":0,"z":0},"angular":{"x":0,"y":0,"z":0}},"errorCode":"","msg":"successed","successed":true}
+        ```
 
 ## 数据存储
 
@@ -238,6 +265,8 @@ POST 请求需要内容样例如下：
 ```
 
 ## 代码示例
+
+参考 [express 指南](https://expressjs.com/zh-cn/guide/routing.html)、[Node.js 文档](https://nodejs.org/docs/latest-v10.x/api/)、[rosnodejs 仓库](https://github.com/RethinkRobotics-opensource/rosnodejs)等。   
 
 **[server.js](server.js)**:  
 

@@ -8,11 +8,6 @@ app.use('/gs-robot', require('./gs-robot/real_time_data'))
 app.use('/gs-robot', require('./gs-robot/data'))
 app.use('/gs-robot', require('./gs-robot/cmd'))
 
-// const pos = {}
-// pos.x = 20
-// console.log(pos)
-// delete pos.x
-// console.log(pos)
 
 // 启动服务器
 app.listen(8080, function () {

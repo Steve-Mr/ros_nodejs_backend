@@ -36,7 +36,6 @@ router.get('/positions', (req, res) => {
         let points_data = []
         if (data) {
             for (point of data) {
-                console.log(point.createdAt.toString());
                 points_data.push({
                     "angle": point.angle,
                     "createdAt": formatDate(point.createdAt),

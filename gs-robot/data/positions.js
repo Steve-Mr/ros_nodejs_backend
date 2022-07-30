@@ -63,7 +63,7 @@ router.get('/positions', (req, res) => {
                 })
             }
         }
-        let response_json = util.successed_json
+        let response_json = JSON.parse(JSON.stringify(util.successed_json))
         response_json.data = points_data
         res.json(response_json);
     })

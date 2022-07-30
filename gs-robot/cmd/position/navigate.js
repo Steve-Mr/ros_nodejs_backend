@@ -116,7 +116,7 @@ router.get('/position/navigate', (req, res) => {
                                 delete pos.y;
                                 res.json(util.successed_json)
                             } else {
-                                let msg = util.error_json;
+                                let msg = JSON.parse(JSON.stringify(util.error_json));
                                 msg.errorCode = state.code;
                                 // 如果任务在暂停之外的状态退出，清空 pos
                                 if(state.code!=='PAUSED'){

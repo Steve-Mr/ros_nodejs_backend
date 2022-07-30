@@ -54,7 +54,7 @@ router.get('/maps', (req, res) => {
             };
             message.push(jsonData)
         }
-        let json = util.successed_json
+        let json = JSON.parse(JSON.stringify(util.successed_json))
         json.data = message
         console.log(json)
         res.json(json);

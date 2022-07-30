@@ -237,7 +237,7 @@ npm install moment
 - [x] 1.3.8  获取地图列表 ```/gs-robot/data/maps```	
 - [ ] 1.3.13 编辑地图 ```/gs-robot/cmd/edit_map?map_name=?&operation_type=?```	
 - [ ] 1.4.1  加载地图 ```/gs-robot/cmd/load_map?map_name=? ```	
-- [ ] 1.4.10 获取初始化点列表 ```/gs-robot/data/positions?map_name=?&type=0```	
+- [x] 1.4.10 获取初始化点列表 ```/gs-robot/data/positions?map_name=?&type=0```	<= 同 1.2.14
 - [x] 1.5.1  导航到导航点 ```/gs-robot/cmd/position/navigate?map_name=?&position_name=?```	
 - [x] 1.5.3  暂停导航 ```/gs-robot/cmd/pause_navigate```	
 - [x] 1.5.4  恢复导航 ```/gs-robot/cmd/resume_navigate```	

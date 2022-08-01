@@ -56,13 +56,29 @@ npm install moment
 
     1. 配置数据库
 
-        登录 mysql 创建 robot 数据库、使用该数据库并导入 sql 文件：
-        ```sql
-        CREATE DATABASE robot;
-        USE robot;
-        source /path/to/sql/file/robot.sql
-        ``` 
-        /path/to/sql/file/ 需要根据自己目录位置进行调整，且 /path/to/sql/file/robot.sql 前后不需要添加引号。  
+        1. 安装 MySQL 
+            ```sh
+            sudo apt install mysql-server
+            sudo systemctl start mysql.service
+            ```
+        2. 配置 MySQL
+
+            在终端中执行 ```sudo mysql```，进入 mysql 后执行  
+            ```sql
+            ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456';
+            ```
+            使用 ```exit``` 退出后，使用 ```mysql -u root -p``` 测试能否正常登录，回车后输入密码（输入时密码不可见）。  
+
+            登录 mysql 后创建 robot 数据库、使用该数据库并导入 sql 文件：
+            ```sql
+            CREATE DATABASE robot;
+            USE robot;
+            source /path/to/sql/file/robot.sql
+            ``` 
+            注意 /path/to/sql/file/ 需要根据自己目录位置进行调整，且 /path/to/sql/file/robot.sql 前后不需要添加引号。  
+            如 ```source /home/username/catkin_ws/src/apiserver/scripts/robot.sql```  
+
+            在项目目录 /apiserver/scripts/gs-robot/database.js 中可以对数据库连接进行配置，如用户名、密码、使用的数据库名称等。
 
     2. 运行服务器。  
         

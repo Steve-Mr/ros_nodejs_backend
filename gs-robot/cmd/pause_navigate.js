@@ -14,6 +14,7 @@ router.get('/pause_navigate', (req, res) => {
     if (Object.keys(navigate.pos).length) {
         rosnodejs.initNode('navigation_node', { onTheFly: true }).then(() => {
             const nh = rosnodejs.nh;
+            // 关于 SimapleActionClient 的说明请查看 /cmd/position/navigate.js 文件为中注释
             const ac = new rosnodejs.SimpleActionClient({
                 nh,
                 type: 'move_base_msgs/MoveBase',

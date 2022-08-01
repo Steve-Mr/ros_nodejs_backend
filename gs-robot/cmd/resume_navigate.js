@@ -19,6 +19,7 @@ router.get('/resume_navigate', (req, res) => {
         // 这一部分与 navigate.js 中基本一致
         rosnodejs.initNode('navigation_node', { onTheFly: true }).then(() => {
             const nh = rosnodejs.nh;
+            // 关于 SimapleActionClient 的说明请查看 /cmd/position/navigate.js 文件为中注释
             const ac = new rosnodejs.SimpleActionClient({
                 nh,
                 type: 'move_base_msgs/MoveBase',

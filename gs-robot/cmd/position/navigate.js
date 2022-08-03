@@ -68,12 +68,12 @@ router.get('/position/navigate', (req, res) => {
              */
 
             message.goal.target_pose.header.frame_id = 'map';
-            message.goal.target_pose.pose.position.x = 20//data[0].gridX;
-            message.goal.target_pose.pose.position.y = 24//data[0].gridY;
+            message.goal.target_pose.pose.position.x = data[0].gridX;
+            message.goal.target_pose.pose.position.y = data[0].gridY;
             message.goal.target_pose.pose.orientation.w = 1;
 
-            pos.x = 20//data[0].gridX;
-            pos.y = 24//data[0].gridY;
+            pos.x = data[0].gridX;
+            pos.y = data[0].gridY;
 
             const ac = new rosnodejs.SimpleActionClient({
                 nh,

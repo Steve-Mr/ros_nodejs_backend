@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS map_info(
 
 INSERT INTO map_info VALUES (1, 1, 1, 'map_1', 'path_1', '2022-07-20', 'user0');
 INSERT INTO map_info VALUES (2, 2, 2, 'map_2', 'path_2', '2022-07-20', 'user0');
+INSERT INTO map_info VALUES (3, 3, 3, 'test', 'path_3', '2022-07-20', 'user0');
+
 
 CREATE TABLE IF NOT EXISTS points_list(
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,

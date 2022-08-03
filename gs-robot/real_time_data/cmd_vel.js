@@ -14,9 +14,9 @@ router.get('/cmd_vel', (req, res) => {
 
   // Promise 保证事件顺序进行， resolve 将参数传递给后续 then
   let p = new Promise(function (resolve, reject) {
-    rosnodejs.initNode('/my_node').then(() => {
+    rosnodejs.initNode('/navigation_node').then(() => {
       const nh = rosnodejs.nh;
-      const sub = nh.subscribe('/cmd_vel', 'geometry_msgs/Twist', (msg) => {
+      const sub = nh.subscribe('/robot_base_velocity_controller/cmd_vel', 'geometry_msgs/Twist', (msg) => {
         resolve(msg)
       });
     });

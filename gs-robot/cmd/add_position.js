@@ -59,9 +59,9 @@ app.post('/add_position', (req, res) => {
 
     // 首先根据请求体中的 map_name 查询对应的地图 id
     database.query(query_sql, [point.mapName], (err, data) => {
-      if (err) {
+      if (err || data.length === 0) {
         res.json(util.error_json);
-        return console.log(err.message);
+        return console.log("no map");
       }
       resolve(data)
     })

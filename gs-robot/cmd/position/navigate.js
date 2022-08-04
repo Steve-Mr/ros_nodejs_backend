@@ -35,9 +35,9 @@ router.get('/position/navigate', (req, res) => {
         let query_sql = "SELECT * FROM points_list WHERE name = ? AND map_name = ?"
 
         database.query(query_sql, [position_name, map_name], (err, data) => {
-            if (err) {
+            if (err || data.length === 0) {
                 res.json(util.error_json);
-                return console.log(err.message)
+                return console.log("cannot get position info")
             }
             resolve(data)
         })

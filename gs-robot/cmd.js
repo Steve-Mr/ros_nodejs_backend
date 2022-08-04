@@ -10,5 +10,6 @@ app.use('/cmd', require('./cmd/pause_navigate'))
 app.use('/cmd', require('./cmd/resume_navigate'))
 app.use('/cmd', require('./cmd/cancel_navigate'))
 app.use('/cmd', require('./cmd/rename_position'))
+app.use('/cmd', require('./cmd/init_rosnode'))
 
 module.exports = app

@@ -1,0 +1,8 @@
+const express = require('express')
+const router = express.Router()
+
+router.use('/real_time_data', require('./real_time_data/cmd_vel'));
+
+// CommonJS 规范，被导出内容可以在其他文件中通过 require 方式进行调用
+// 可以导出多个参数/方法
+module.exports = router

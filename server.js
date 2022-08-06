@@ -1,3 +1,4 @@
+// 导入依赖
 // 导入 express
 const express = require('express');
 // 创建 express实例，也就是创建 express服务器
@@ -9,6 +10,7 @@ app.use('/gs-robot', require('./gs-robot/data'))
 app.use('/gs-robot', require('./gs-robot/cmd'))
 
 // 启动服务器
+// 监听 8080 端口
 app.listen(8080, function () {
   console.log('服务器已启动')
 })

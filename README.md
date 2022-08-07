@@ -284,7 +284,7 @@ POST 请求需要内容样例如下：
 
 参考 [express 指南](https://expressjs.com/zh-cn/guide/routing.html)、[Node.js 文档](https://nodejs.org/docs/latest-v10.x/api/)、[rosnodejs 仓库](https://github.com/RethinkRobotics-opensource/rosnodejs)等。   
 
-**[server.js](server.js)**:  
+**[server.js](scripts/server.js)**:  
 
 server.js 是一个 express 路由，表示应用程序端点的定义以及端点响应客户机请求的方式。
 
@@ -307,7 +307,7 @@ app.listen(8080, function () {
 })
 ```
 
-**[real_time_data.js](gs-robot/real_time_data.js)**:   
+**[real_time_data.js](scripts/gs-robot/real_time_data.js)**:   
 
 real_time_data.js 在这里承担了次级路由的功能，将访问路由到对应的中间件中。
 
@@ -322,7 +322,7 @@ router.use('/real_time_data', require('./real_time_data/cmd_vel'));
 module.exports = router
 ```  
 
-**[cmd_vel.js](gs-robot/real_time_data/cmd_vel.js)**:   
+**[cmd_vel.js](scripts/gs-robot/real_time_data/cmd_vel.js)**:   
 
 cmd_vel.js 中包含了较为典型的中间件函数，中间件函数能够访问请求对象、响应对象以及应用程序的请求/响应循环中的下一个中间件函数。下一个中间件函数通常由名为 next 的变量来表示，如果当前中间件函数没有结束请求/响应循环，那么它必须调用 next()，以将控制权传递给下一个中间件函数。否则，请求将保持挂起状态。   
 

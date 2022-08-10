@@ -60,8 +60,9 @@ app.post('/add_position', (req, res) => {
     // 首先根据请求体中的 map_name 查询对应的地图 id
     database.query(query_sql, [point.mapName], (err, data) => {
       if (err || data.length === 0) {
-        res.json(util.error_json);
-        return console.log("no map");
+        // res.json(util.error_json);
+        reject("no map")
+        // return console.log("no map");
       }
       resolve(data)
     })
@@ -79,12 +80,17 @@ app.post('/add_position', (req, res) => {
     let query = database.query(insert_sql, values, (err, data) => {
       console.log(query.sql)
       if (err) {
-        res.json(util.error_json);
-        return console.log(err.message);
+        reject(err)
+        // res.json(util.error_json);
+        // return console.log(err.message);
       }
       res.status(200);
       res.json(util.successed_json)
     })
+  })
+  .catch((err)=>{
+    res.json(util.error_json)
+    console.log(err)
   })
 
 });

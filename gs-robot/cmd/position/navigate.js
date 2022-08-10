@@ -37,11 +37,12 @@ router.get('/position/navigate', (req, res) => {
         database.query(query_sql, [position_name, map_name], (err, data) => {
             if (err || data.length === 0) {
                 res.json(util.error_json);
-                return console.log("cannot get position info")
+                reject("cannot get position info")
             }
             resolve(data)
         })
-    }).then(function (data) {
+    })
+    .then(function (data) {
 
         // 根据点的信息设定 MoveBaseActionGoal，即导航的目标点
         // 这里整体的思路参照 http://wiki.ros.org/navigation/Tutorials/SendingSimpleGoals 中的内容
@@ -129,6 +130,10 @@ router.get('/position/navigate', (req, res) => {
                         })
                 })
         })
+    })
+    .catch((err)=>{
+        console.log(err)
+        // res.json(util.error_json)
     })
 })
 

@@ -11,6 +11,7 @@ const util = require('../util')
 const navigate = require('./position/navigate')
 
 router.get('/pause_navigate', (req, res) => {
+    // 正在有导航任务才能暂停
     if (Object.keys(navigate.pos).length) {
         rosnodejs.initNode('navigation_node', { onTheFly: true }).then(() => {
             const nh = rosnodejs.nh;

@@ -21,7 +21,7 @@
  router.get('/sub_topic', (req, res) => {
 
     let topic = req.query.topic;
-    let type = req.query.message_type.replace('_', "/");
+    let type = req.query.message_type.replace('__', "/");
     let param = req.query.param;
  
    const rosnodejs = require('rosnodejs');

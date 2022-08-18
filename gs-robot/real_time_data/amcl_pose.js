@@ -44,6 +44,7 @@
      });
    })
    p.then(function (data) {
+    rosnodejs.nh.unsubscribe('/amcl_pose')
      message = {
        "data": JSON.parse(JSON.stringify(data)), "errorCode": "",
        "msg": "successed", "successed": true

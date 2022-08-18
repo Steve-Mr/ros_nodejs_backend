@@ -33,6 +33,7 @@ app.post('/pub_topic', (req, res) => {
             throttleMs: 9
         })
         pub.publish(req.body);
+        nh.
         res.json(util.successed_json)
     })
 })

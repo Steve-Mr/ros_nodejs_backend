@@ -67,30 +67,39 @@ app.get('/position', (req, res) => {
       });
     });
   }).then(function (data) {
-    const nh = rosnodejs.nh;
-    nh.subscribe('/map_metadata', 'nav_msgs/MapMetaData', (result) =>{
-      data.mapInfo.gridHeight = result.height;
-      data.mapInfo.gridWidth = result.width;
-      data.mapInfo.originX = result.origin.position.x;
-      data.mapInfo.originY = result.origin.position.y;
-      data.mapInfo.resolution = result.resolution;
-    });
 
-    return(data);
-  }).then(function(data){
-    const nh = rosnodejs.nh;
-    nh.subscribe('/robot_base_velocity_controller/odom', 'nav_msgs/Odometry', {queueSize:1}, (result) =>{
-      // {queueSize:1}, 
-      data.worldPosition = result.pose.pose;
-      // console.log(data)
-
+    new Promise(function (resolve, reject) {
+      const nh = rosnodejs.nh;
+      nh.unsubscribe('/tf')
+      nh.subscribe('/map_metadata', 'nav_msgs/MapMetaData', (result) => {
+        data.mapInfo.gridHeight = result.height;
+        data.mapInfo.gridWidth = result.width;
+        data.mapInfo.originX = result.origin.position.x;
+        data.mapInfo.originY = result.origin.position.y;
+        data.mapInfo.resolution = result.resolution;
+        resolve(data);
+      });
       
-    });
-    return(data)
-  }).then(function(data){
-    console.log(data)
-    res.send(data)
-  });
+    }).then(function (data) {
+      new Promise(function (resolve, reject) {
+        const nh = rosnodejs.nh;
+        nh.unsubscribe('/map_metadata')
+        nh.subscribe('/robot_base_velocity_controller/odom', 'nav_msgs/Odometry', (result) => {
+          // {queueSize:1}, 
+          data.worldPosition = result.pose.pose;
+          // console.log(data)
+          resolve(data)
+        })
+        
+      }).then(function (data) {
+        const nh = rosnodejs.nh;
+        nh.unsubscribe('/robot_base_velocity_controller/odom')
+        res.json(data);
+      }).catch(err => console.err(err))
+    }).catch(err => console.err(err))
+  }).catch(err => {
+    console.err(err);
+  })
 })
 
 module.exports = app

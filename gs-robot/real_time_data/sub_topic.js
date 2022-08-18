@@ -65,6 +65,7 @@
      });
    })
    p.then(function (data) {
+    rosnodejs.nh.unsubscribe(topic);
      message = {
        "data": JSON.parse(JSON.stringify(data)), "errorCode": "",
        "msg": "successed", "successed": true

@@ -46,7 +46,7 @@ router.get('/position/navigate', (req, res) => {
 
         // 根据点的信息设定 MoveBaseActionGoal，即导航的目标点
         // 这里整体的思路参照 http://wiki.ros.org/navigation/Tutorials/SendingSimpleGoals 中的内容
-        rosnodejs.initNode('navigation_node', { onTheFly: true }).then(() => {
+        rosnodejs.initNode(util.node_name, { onTheFly: true }).then(() => {
             const nh = rosnodejs.nh;
 
             const move_base_msgs = rosnodejs.require('move_base_msgs')

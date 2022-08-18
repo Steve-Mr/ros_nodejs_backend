@@ -5,6 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
+const util = require('../util')
 
 /**
  * get: 中间件适用的 HTTP 方法
@@ -27,8 +28,9 @@ router.get('/cmd_vel', (req, res) => {
    * 并在完成时调用相应的回调函数（传递给 then 或 catch）
   */
   let p = new Promise(function (resolve, reject) {
+    util.init_connection(util.node_name);
     // 创建名字为 navigation_node 的节点，可能有同一时间只能有一个节点的限制（不确定）
-    rosnodejs.initNode('/navigation_node').then(() => {
+    rosnodejs.initNode(util.node_name).then(() => {
       const nh = rosnodejs.nh;
       /**
        * subscribe(topic, type, callback, options={})
@@ -38,14 +40,14 @@ router.get('/cmd_vel', (req, res) => {
        * @param options: 选项对象，下面代码中未使用
        * 
       */
-      const sub = nh.subscribe('/robot_base_velocity_controller/cmd_vel', 'geometry_msgs/Twist', (msg) => {
+      const sub = nh.subscribe(util.topic_cmd_vel, util.message_cmd_vel, (msg) => {
         // 通过 resolve 将 msg 传递下去
         resolve(msg)
       });
     });
   })
   p.then(function (data) {
-    rosnodejs.nh.unsubscribe('/robot_base_velocity_controller/cmd_vel');
+    rosnodejs.nh.unsubscribe(util.topic_cmd_vel);
     message = {
       "data": JSON.parse(JSON.stringify(data)), "errorCode": "",
       "msg": "successed", "successed": true

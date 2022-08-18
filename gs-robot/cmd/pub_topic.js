@@ -25,7 +25,7 @@ app.post('/pub_topic', (req, res) => {
 
     const rosnodejs = require('rosnodejs')
 
-    rosnodejs.initNode('/navigation_node').then(() => {
+    rosnodejs.initNode(util.node_name).then(() => {
         const nh = rosnodejs.nh;
         let pub = nh.advertise(topic, type, {
             queueSize: 1,

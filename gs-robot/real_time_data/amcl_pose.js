@@ -5,6 +5,7 @@
 
  const express = require('express');
  const router = express.Router();
+ const util = require('../util')
  
  /**
   * get: 中间件适用的 HTTP 方法
@@ -26,8 +27,9 @@
     * 并在完成时调用相应的回调函数（传递给 then 或 catch）
    */
    let p = new Promise(function (resolve, reject) {
+    util.init_connection(util.node_name);
      // 创建名字为 navigation_node 的节点，可能有同一时间只能有一个节点的限制（不确定）
-     rosnodejs.initNode('/navigation_node').then(() => {
+     rosnodejs.initNode(util.node_name).then(() => {
        const nh = rosnodejs.nh;
        /**
         * subscribe(topic, type, callback, options={})
@@ -37,14 +39,14 @@
         * @param options: 选项对象，下面代码中未使用
         * 
        */
-       const sub = nh.subscribe('/amcl_pose', 'geometry_msgs/PoseWithCovarianceStamped', (msg) => {
+       const sub = nh.subscribe(util.topic_amcl, util.message_amcl, (msg) => {
          // 通过 resolve 将 msg 传递下去
          resolve(msg)
        });
      });
    })
    p.then(function (data) {
-    rosnodejs.nh.unsubscribe('/amcl_pose')
+    rosnodejs.nh.unsubscribe(util.topic_amcl)
      message = {
        "data": JSON.parse(JSON.stringify(data)), "errorCode": "",
        "msg": "successed", "successed": true

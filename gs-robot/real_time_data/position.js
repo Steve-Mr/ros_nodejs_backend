@@ -6,6 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const cors = require('cors');
+const util = require('../util')
 
 const app = express();
 app.options('*', cors())
@@ -18,11 +19,12 @@ app.get('/position', (req, res) => {
   let message;
 
   let p = new Promise(function (resolve, reject) {
+    util.init_connection(util.node_name);
     // 创建名字为 navigation_node 的节点，可能有同一时间只能有一个节点的限制（不确定）
-    rosnodejs.initNode('/navigation_node').then(() => {
+    rosnodejs.initNode(util.node_name).then(() => {
       const nh = rosnodejs.nh;
 
-      const sub = nh.subscribe('/tf', 'tf/tfMessage', (result) => {
+      nh.subscribe(util.topic_tf, util.message_tf, (result) => {
         // let msg_string = JSON.stringify(msg)
         if (JSON.stringify(result).includes('"child_frame_id":"base_footprint"')) {
           let msg = {
@@ -70,8 +72,8 @@ app.get('/position', (req, res) => {
 
     new Promise(function (resolve, reject) {
       const nh = rosnodejs.nh;
-      nh.unsubscribe('/tf')
-      nh.subscribe('/map_metadata', 'nav_msgs/MapMetaData', (result) => {
+      nh.unsubscribe(util.topic_tf)
+      nh.subscribe(util.topic_map_metadata, util.message_map_metadata, (result) => {
         data.mapInfo.gridHeight = result.height;
         data.mapInfo.gridWidth = result.width;
         data.mapInfo.originX = result.origin.position.x;
@@ -79,21 +81,21 @@ app.get('/position', (req, res) => {
         data.mapInfo.resolution = result.resolution;
         resolve(data);
       });
-      
+
     }).then(function (data) {
       new Promise(function (resolve, reject) {
         const nh = rosnodejs.nh;
-        nh.unsubscribe('/map_metadata')
-        nh.subscribe('/robot_base_velocity_controller/odom', 'nav_msgs/Odometry', (result) => {
+        nh.unsubscribe(util.topic_map_metadata);
+        nh.subscribe(util.topic_odom, util.message_odom, (result) => {
           // {queueSize:1}, 
           data.worldPosition = result.pose.pose;
           // console.log(data)
           resolve(data)
         })
-        
+
       }).then(function (data) {
         const nh = rosnodejs.nh;
-        nh.unsubscribe('/robot_base_velocity_controller/odom')
+        nh.unsubscribe(util.topic_odom)
         res.json(data);
       }).catch(err => console.err(err))
     }).catch(err => console.err(err))

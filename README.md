@@ -239,6 +239,7 @@ npm install moment
 
 ## 计划实现 API 
 
+- [x] 1.2.11 实时角速度和线速度数据 ```/gs-robot/real_time_data/cmd_vel```
 - [x] 1.2.14 地图点数据 ```/gs-robot/data/positions?map_name=?&type=?```	
 - [x] 1.2.15 记录点	```/gs-robot/cmd/add_position?position_name=?&type=? ```
 - [x] 1.2.16 删除点	```/gs-robot/cmd/delete_position?map_name=?&position_name=?```
@@ -254,15 +255,16 @@ npm install moment
 - [ ] 1.3.13 编辑地图 ```/gs-robot/cmd/edit_map?map_name=?&operation_type=?```	
 - [ ] 1.4.1  加载地图 ```/gs-robot/cmd/load_map?map_name=? ```	
 - [x] 1.4.10 获取初始化点列表 ```/gs-robot/data/positions?map_name=?&type=0```	<= 同 1.2.14
+- [x] 1.4.11 机器人在地图的实时位置 ```/gs-robot/real_time_data/position```
 - [x] 1.5.1  导航到导航点 ```/gs-robot/cmd/position/navigate?map_name=?&position_name=?```	
 - [x] 1.5.3  暂停导航 ```/gs-robot/cmd/pause_navigate```	
 - [x] 1.5.4  恢复导航 ```/gs-robot/cmd/resume_navigate```	
 - [x] 1.5.5  取消导航 ```/gs-robot/cmd/cancel_navigate```	
 - [x] 1.9.1  获取虚拟墙数据 ```/gs-robot/data/virtual_obstacles?map_name=?```	
 - [x] 1.9.2  添加或更新虚拟墙数据 ```/gs-robot/cmd/update_virtual_obstacles?map_name=?&obstacle_name=?```
+- [x] 1.9.3  添加点 ```/gs-robot/cmd/position/add_position```
 
-- [x] 小车实时运行数据 ```/gs-robot/real_time_data/cmd_vel```
-- [x] 收到任务确认 ```/gs-robot/others/task_confirm```  
+- [ ] 收到任务确认 ```/gs-robot/others/task_confirm```  
 
 备注： 1.2.15 记录点 API 使用了 POST 请求，因此 positon_name 和 type 为可选参数。  
 

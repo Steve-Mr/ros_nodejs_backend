@@ -13,5 +13,6 @@ app.use('/cmd', require('./cmd/rename_position'))
 app.use('/cmd', require('./cmd/init_rosnode'))
 // app.use('/cmd', require('./cmd/load_map'))
 app.use('/cmd', require('./cmd/pub_topic'))
+app.use('/cmd', require('./cmd/position/add_position'))
 
 module.exports = app

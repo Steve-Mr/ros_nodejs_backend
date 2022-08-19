@@ -3,6 +3,18 @@
  * 
  * POST 请求　/gs-robot/cmd/add_position?position_name=?&type=?
  * 
+ * 这里文档中为 GET 请求，这里参考了 1.9.3 添加点 部分改为了 POST 请求
+ * position_name 和 type 参数没有实际功能。
+ * 
+ * POST 请求格式
+ *  {
+      "angle":-55,
+      "gridX":468,
+      "gridY":512,
+      "mapName":"office",
+      "name":"origin",
+      "type":2
+    }
  */
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -17,8 +29,8 @@ const bodyParser = require('body-parser')
  */
 const cors = require('cors')
 
-const database = require('../database')
-const util = require('../util')
+const database = require('../../database')
+const util = require('../../util')
 
 const app = express();
 
@@ -33,31 +45,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-app.get('/add_position', (req, res) => {
-  let position_name = req.query.position_name;
-  let type = req.query.type;
-
-  if(!position_name || !type) return res.json(util.error_json)
-
-  let query_sql = 'SELECT * FROM points_list WHERE name = ? AND type = ?';
-  new Promise(function(resolve, reject){
-    database.query(query_sql, [position_name, type], (err, data) => {
-      if(err || data.length === 0){
-        reject('no point')
-      }
-      resolve(data)
-    })
-  }).then(function(data){
-    console.log(data)
-    // 这里应该有一些『记录点』的操作
-    res.json(util.successed_json)
-  }).catch((err)=>{
-    console.log(err)
-    res.json(util.error_json)
-  })
-})
-
-app.post('/add_position', (req, res) => {
+app.post('/position/add_position', (req, res) => {
   let position_name = req.query.position_name;
   let type = req.query.type;
 

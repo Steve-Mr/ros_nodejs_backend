@@ -24,11 +24,14 @@ router.get('/pause_navigate', (req, res) => {
             })
 
             // 设置 navigate 中的状态码为 PAUSED，navigate 的返回信息中会显示此状态码
-            navigate.state.code = "PAUSED"
             ac.waitForServer()
                 .then(() => {
+                    navigate.state.code = "PAUSED"
                     ac.cancelAllGoals()
                     res.json(util.successed_json)
+                })
+                .catch((error) => {
+                    res.json(util.error_json)
                 })
         })
     } else {

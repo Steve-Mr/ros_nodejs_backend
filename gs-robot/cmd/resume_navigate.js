@@ -50,6 +50,11 @@ router.get('/resume_navigate', (req, res) => {
                                     res.json(util.error_json)
                                 }
                             })
+                            .catch((err) => {
+                                let msg = JSON.parse(JSON.stringify(util.error_json));
+                                msg.errorCode = err
+                                res.json(msg)
+                            })
                     })
         })
 

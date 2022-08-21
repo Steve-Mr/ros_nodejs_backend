@@ -26,11 +26,14 @@ router.get('/cancel_navigate', (req, res) => {
             navigate.state.code = "CANCELED"
             ac.waitForServer()
                 .then(() => {
-                    ac.cancelAllGoals()
                     // 取消了导航，则清除原本的目标坐标
                     navigate.clearPos();
                     navigate.isCanceled = true;
+                    ac.cancelAllGoals()
                     res.json(util.successed_json)
+                })
+                .catch((err) => {
+                    console.log(err)
                 })
         })
     } else {

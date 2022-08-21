@@ -19,7 +19,7 @@ const state = { code: "UNKNOWN" }
 router.get('/position/navigate', (req, res) => {
     let map_name, position_name;
 
-    if (typeof req.query.map_name != 'undefined' &&
+    if (typeof req.query.map_name != 'undefined' && 
         typeof req.query.position_name != undefined &&  // 是否包含了参数
         req.query.map_name && req.query.position_name) { // 参数是否有值
         map_name = req.query.map_name;
@@ -133,7 +133,9 @@ router.get('/position/navigate', (req, res) => {
     })
     .catch((err)=>{
         console.log(err)
-        // res.json(util.error_json)
+        res.json(util.error_json)
+    }).catch((err) => {
+        console.log(err)
     })
 })
 

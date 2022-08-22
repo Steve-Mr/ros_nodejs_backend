@@ -17,15 +17,48 @@ router.get('/resume_navigate', (req, res) => {
         let pos = navigate.pos;
 
         // 这一部分与 navigate.js 中基本一致
-        rosnodejs.initNode(util.node_name, { onTheFly: true }).then(() => {
-            const nh = rosnodejs.nh;
-            // 关于 SimapleActionClient 的说明请查看 /cmd/position/navigate.js 文件为中注释
-            const ac = new rosnodejs.SimpleActionClient({
-                nh,
-                type: 'move_base_msgs/MoveBase',
-                // 虽然不知道为什么，但是在处理过程中 rosnodejs 会自动在 type 结尾添加 ActionGoal
-                actionServer: '/move_base'
-            })
+        // rosnodejs.initNode(util.node_name, { onTheFly: true }).then(() => {
+        //     const nh = rosnodejs.nh;
+        //     // 关于 SimapleActionClient 的说明请查看 /cmd/position/navigate.js 文件为中注释
+        //     const ac = new rosnodejs.SimpleActionClient({
+        //         nh,
+        //         type: 'move_base_msgs/MoveBase',
+        //         // 虽然不知道为什么，但是在处理过程中 rosnodejs 会自动在 type 结尾添加 ActionGoal
+        //         actionServer: '/move_base'
+        //     })
+
+        //     const move_base_msgs = rosnodejs.require('move_base_msgs')
+
+        //     const message = new move_base_msgs.msg.MoveBaseActionGoal();
+
+        //     message.goal.target_pose.header.frame_id = 'map';
+        //     message.goal.target_pose.pose.position.x = pos.x;
+        //     message.goal.target_pose.pose.position.y = pos.y;
+        //     message.goal.target_pose.pose.orientation.w = 1;
+
+        //     ac.waitForServer()
+        //             .then(() => {
+        //                 console.log('connected');
+        //                 console.log(message)
+        //                 ac.sendGoalAndWait(message.goal, util.timeout(util.default_timeout), util.timeout(util.default_timeout))
+        //                     .then(() => {
+        //                         if (ac.getState() === 'SUCCEEDED') {
+        //                             pos = {};
+        //                             navigate.clearPos();
+        //                             res.json(util.successed_json)
+        //                         } else {
+        //                             res.json(util.error_json)
+        //                         }
+        //                     })
+        //                     .catch((err) => {
+        //                         let msg = JSON.parse(JSON.stringify(util.error_json));
+        //                         msg.errorCode = err
+        //                         res.json(msg)
+        //                     })
+        //             })
+        // })
+
+            const ac = util.sac;
 
             const move_base_msgs = rosnodejs.require('move_base_msgs')
 
@@ -56,7 +89,6 @@ router.get('/resume_navigate', (req, res) => {
                                 res.json(msg)
                             })
                     })
-        })
 
     }else{
         res.json(util.error_json)

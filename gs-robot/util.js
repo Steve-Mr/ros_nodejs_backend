@@ -46,13 +46,49 @@ function init_connection(node_name) {
     })
 }
 
+// const rosnodejs = require('rosnodejs')
+// const nh = rosnodejs.nh;
+
+// const ac = new rosnodejs.SimpleActionClient({
+//   nh,
+//   type: 'move_base_msgs/MoveBase',
+//   actionServer: '/move_base'
+// });
+
+new Promise(function (resolve, reject) {
+  const rosnodejs = require('rosnodejs')
+  rosnodejs.initNode(node_name, { onTheFly: true }).then(() => {
+    const nh = rosnodejs.nh;
+    console.log('getting simpleactionclient...')
+    const ac = new rosnodejs.SimpleActionClient({
+      nh,
+      type: 'move_base_msgs/MoveBase',
+      actionServer: '/move_base'
+    })
+    resolve(ac)
+  })
+}).then(function (data) {
+  module.exports.sac = data;
+
+})
+// rosnodejs.initNode(node_name, { onTheFly: true }).then(() => {
+//   const nh = rosnodejs.nh;
+//   console.log('getting simpleactionclient...')
+//   ac = new rosnodejs.SimpleActionClient({
+//     nh,
+//     type: 'move_base_msgs/MoveBase',
+//     actionServer: '/move_base'
+//   })
+// })
+
 // 默认超时时长
 const default_timeout = 180;
 
 // 导航中指向的 frame id，需要根据不同情况进行修改
 const navigate_frame_id = 'map'
 
-const path = require('path')
+const path = require('path');
+const app = require('./cmd');
 
 const root_dir = __dirname
 
@@ -80,6 +116,8 @@ module.exports.root_dir = root_dir;
 module.exports.maps_dir = maps_dir;
 module.exports.init_connection = init_connection;
 module.exports.node_name = node_name;
+
+// module.exports.sac = ac;
 
 
 

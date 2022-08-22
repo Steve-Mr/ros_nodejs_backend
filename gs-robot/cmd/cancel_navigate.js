@@ -13,15 +13,32 @@ const navigate = require('./position/navigate')
 router.get('/cancel_navigate', (req, res) => {
     // 有正在导航任务才能取消任务
     if (Object.keys(navigate.pos).length) {
-        rosnodejs.initNode('navigation_node', { onTheFly: true }).then(() => {
-            const nh = rosnodejs.nh;
-            // 关于 SimapleActionClient 的说明请查看 /cmd/position/navigate.js 文件为中注释
-            const ac = new rosnodejs.SimpleActionClient({
-                nh,
-                type: 'move_base_msgs/MoveBase',
-                // 虽然不知道为什么，但是在处理过程中 rosnodejs 会自动在 type 结尾添加 ActionGoal
-                actionServer: '/move_base'
-            })
+        // rosnodejs.initNode('navigation_node', { onTheFly: true }).then(() => {
+        //     const nh = rosnodejs.nh;
+        //     // 关于 SimapleActionClient 的说明请查看 /cmd/position/navigate.js 文件为中注释
+        //     const ac = new rosnodejs.SimpleActionClient({
+        //         nh,
+        //         type: 'move_base_msgs/MoveBase',
+        //         // 虽然不知道为什么，但是在处理过程中 rosnodejs 会自动在 type 结尾添加 ActionGoal
+        //         actionServer: '/move_base'
+        //     })
+        //     // 设置 navigate 状态码，可在 navigate 返回的 json 中显示
+        //     navigate.state.code = "CANCELED"
+        //     ac.waitForServer()
+        //         .then(() => {
+        //             // 取消了导航，则清除原本的目标坐标
+        //             navigate.clearPos();
+        //             navigate.isCanceled = true;
+        //             ac.cancelAllGoals()
+        //             res.json(util.successed_json)
+        //         })
+        //         .catch((err) => {
+        //             console.log(err)
+        //         })
+        // })
+
+            const ac = util.sac;
+            
             // 设置 navigate 状态码，可在 navigate 返回的 json 中显示
             navigate.state.code = "CANCELED"
             ac.waitForServer()
@@ -35,7 +52,6 @@ router.get('/cancel_navigate', (req, res) => {
                 .catch((err) => {
                     console.log(err)
                 })
-        })
     } else {
         res.json(util.error_json)
     }

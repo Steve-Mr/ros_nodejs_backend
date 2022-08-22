@@ -27,7 +27,7 @@
     * 并在完成时调用相应的回调函数（传递给 then 或 catch）
    */
    let p = new Promise(function (resolve, reject) {
-    util.init_connection(util.node_name);
+    // util.init_connection(util.node_name);
      // 创建名字为 navigation_node 的节点，可能有同一时间只能有一个节点的限制（不确定）
      rosnodejs.initNode(util.node_name).then(() => {
        const nh = rosnodejs.nh;

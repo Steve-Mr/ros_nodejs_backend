@@ -96,11 +96,11 @@ const maps_dir = path.join(__dirname, "data", "maps");
 
 module.exports.topic_tf = '/tf';
 module.exports.message_tf = 'tf/tfMessage';
-module.exports.topic_cmd_vel = '/robot_base_velocity_controller/cmd_vel';
+module.exports.topic_cmd_vel = '/cmd_vel';
 module.exports.message_cmd_vel = 'geometry_msgs/Twist';
 module.exports.topic_map_metadata = '/map_metadata';
 module.exports.message_map_metadata = 'nav_msgs/MapMetaData';
-module.exports.topic_odom = '/robot_base_velocity_controller/odom';
+module.exports.topic_odom = '/odom';
 module.exports.message_odom = 'nav_msgs/Odometry';
 module.exports.topic_amcl = '/amcl_pose';
 module.exports.message_amcl = 'geometry_msgs/PoseWithCovarianceStamped';

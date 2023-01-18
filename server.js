@@ -27,7 +27,7 @@ server.on('upgrade', (request, socket, head) => {
 
 // 启动服务器
 // 监听 8080 端口
-app.listen(8080, function () {
+app.listen(8088, function () {
   console.log('服务器已启动')
 })
 

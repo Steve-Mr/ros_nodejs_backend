@@ -60,12 +60,12 @@ router.get('/virtual_obstacles', (req, res) => {
                 return console.log(err.message);
               }
               res.status(200);
-              let objs = "{}";
+              let objs = "";
               if(data){
-                objs = data.toString()
+                objs = data
               }
               let json = JSON.parse(JSON.stringify(util.successed_json))
-              json.data = objs
+              json.data = JSON.parse(objs)
               res.json(json)
         }
     )

@@ -26,7 +26,7 @@ app.get('/position', (req, res) => {
 
       nh.subscribe(util.topic_tf, util.message_tf, (result) => {
         // let msg_string = JSON.stringify(msg)
-        if (JSON.stringify(result).includes('"child_frame_id":"base_footprint"')) {
+        if (JSON.stringify(result).includes('"child_frame_id":"base_link"')) {
           let msg = {
             "angle": -173.41528128678252,
             "gridPosition": {

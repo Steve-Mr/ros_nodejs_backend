@@ -92,7 +92,14 @@ const app = require('./cmd');
 
 const root_dir = __dirname
 
-const maps_dir = path.join(__dirname, "data", "maps");
+const maps_dir = path.resolve(path.join(__dirname, "..", '..', '..', 'navigation', 'map'));
+
+function getCoord(point, or, h, r){
+  return {
+    x: Math.round((point.x - or.x)/r),
+    y: Math.round(h - Math.abs(point.y - or.y)/r)
+  }
+}
 
 module.exports.topic_tf = '/tf';
 module.exports.message_tf = 'tf/tfMessage';
@@ -116,6 +123,8 @@ module.exports.root_dir = root_dir;
 module.exports.maps_dir = maps_dir;
 module.exports.init_connection = init_connection;
 module.exports.node_name = node_name;
+
+module.exports.getCoord = getCoord;
 
 // module.exports.sac = ac;
 

@@ -15,6 +15,8 @@ const sizeOf = require('image-size') // 用来获取地图图片大小
 const db = require('../database')
 const util = require('../util')
 
+const path = require('path')
+
 const router = express.Router();
 
 router.get('/maps', (req, res) => {
@@ -32,8 +34,8 @@ router.get('/maps', (req, res) => {
         }
         let result = JSON.parse(JSON.stringify(data));
         for (let index in result) {
-            const doc = yaml.load(fs.readFileSync(__dirname + '/maps/' + result[index].map_name + ".yaml"))
-            const dimensions = sizeOf(__dirname + '/maps/' + result[index].map_name + ".png");
+            const doc = yaml.load(fs.readFileSync(path.join(util.maps_dir, result[index].map_name + ".yaml")))
+            const dimensions = sizeOf(path.join(util.maps_dir, result[index].map_name + ".pgm"));
 
             let jsonData = {
                 "createdAt": "2016-08-11 04:08:30",

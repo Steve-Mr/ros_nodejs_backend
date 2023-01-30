@@ -9,12 +9,33 @@
 
 const express = require('express');
 const router = express.Router();
+let path = require('path');
+
+const pgmjs = require('pgmjs')
+const util = require('../util')
+const fs = require('fs')
 
 router.get('/map_png', async function(req, res){
     let map_name = req.query.map_name;
 
-    let path = require('path');
-    res.sendFile(path.resolve(__dirname, './maps/' + map_name + '.png'));
+    pgmjs.readPgm(path.join(util.maps_dir, map_name + '.pgm')).then((pgmdata) => {
+        pgmjs.writePngFromPgm(pgmdata, path.join(util.maps_dir, map_name + '.png')).then((err) => {
+            if (err) {
+                console.log(err)
+                res.json(util.error_json)
+            }
+            res.sendFile(path.join(util.maps_dir, map_name + '.png'), (err) => {
+                if(err){
+                    console.log(err)
+                }
+                fs.unlinkSync(path.join(util.maps_dir, map_name + ".png"))
+            })
+        })
+    }).catch((err) => {
+        console.log(err)
+    })
+
+    // res.sendFile(path.resolve(__dirname, './maps/' + map_name + '.png'));
 });
  
 module.exports=router

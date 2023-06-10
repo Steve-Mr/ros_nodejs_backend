@@ -55,7 +55,7 @@ router.get('/cmd_vel', (req, res) => {
   //   res.send(JSON.stringify(message))
   // });
   const child_process = require('child_process')
-  const fun = child_process.fork('./gs-robot/real_time_data/cmd_vel_function.js')
+  const fun = child_process.fork('./robot/real_time_data/cmd_vel_function.js')
   fun.on('message', (msg) =>  {
     fun.kill();
     res.json(msg)

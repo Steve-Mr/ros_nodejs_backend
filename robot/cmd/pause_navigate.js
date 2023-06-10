@@ -1,7 +1,7 @@
 /**
- * 1.5.3 暂停导航
+ * 暂停导航
  * 
- * GET 请求　/gs-robot/cmd/pause_navigate
+ * GET 请求　/robot/cmd/pause_navigate
  * 
  */
 const express = require('express')

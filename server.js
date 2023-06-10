@@ -12,10 +12,10 @@ wss.on('connection', socket => {
 // 创建 express实例，也就是创建 express服务器
 const app = express();
 
-app.use('/gs-robot', require('./gs-robot/real_time_data'))
+app.use('/robot', require('./robot/real_time_data'))
 // 路由器注册，收到请求，启用对应路由
-app.use('/gs-robot', require('./gs-robot/data'))
-app.use('/gs-robot', require('./gs-robot/cmd'))
+app.use('/robot', require('./robot/data'))
+app.use('/robot', require('./robot/cmd'))
 
 
 const server = app.listen(8089);

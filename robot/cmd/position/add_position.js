@@ -1,7 +1,7 @@
 /**
- * 1.2.15 记录点
+ * 记录点
  * 
- * POST 请求　/gs-robot/cmd/add_position?position_name=?&type=?
+ * POST 请求　/robot/cmd/add_position?position_name=?&type=?
  * 
  * 这里文档中为 GET 请求，这里参考了 1.9.3 添加点 部分改为了 POST 请求
  * position_name 和 type 参数没有实际功能。

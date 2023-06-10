@@ -1,7 +1,7 @@
 /**
- * 1.2.14 地图点数据
+ * 地图点数据
  * 
- * GET请求　/gs-robot/data/positions?map_name=?&type=?
+ * GET请求　/robot/data/positions?map_name=?&type=?
  * 
  * type参数不传，默认返回所有点，传type则返回该类型的点
  * 

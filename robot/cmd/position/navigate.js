@@ -1,7 +1,7 @@
 /**
- * 1.5.1 导航到导航点
+ * 导航到导航点
  * 
- * GET 请求 /gs-robot/cmd/position/navigate?map_name=?&position_name=?
+ * GET 请求 /robot/cmd/position/navigate?map_name=?&position_name=?
  * 
  * 根据 map_name 和 position_name 确认坐标点
  */

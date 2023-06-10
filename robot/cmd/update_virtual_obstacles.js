@@ -1,9 +1,9 @@
 /**
- * 1.9.2 添加或更新虚拟墙数据
+ * 添加或更新虚拟墙数据
  * 
  * 虚拟墙数据全部传过来，全部更新一遍，不管是新添加还是更新某个虚拟墙
  * 
- * POST 请求 /gs-robot/cmd/update_virtual_obstacles?map_name=?&obstacle_name=?
+ * POST 请求 /robot/cmd/update_virtual_obstacles?map_name=?&obstacle_name=?
  * 
  * 请求体同获取虚拟墙返回 data 字段
  */

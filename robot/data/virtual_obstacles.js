@@ -1,7 +1,7 @@
 /**
- * 1.9.1 获取虚拟墙数据
+ * 获取虚拟墙数据
  * 
- * GET 请求 /gs-robot/data/virtual_obstacles?map_name=?
+ * GET 请求 /robot/data/virtual_obstacles?map_name=?
  * 
  * response
  * {

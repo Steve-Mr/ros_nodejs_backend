@@ -1,7 +1,7 @@
 /**
- * 1.2.17 重命名点
+ * 重命名点
  * 
- * GET 请求　/gs-robot/cmd/rename_position?map_name=?&origin_name=?&new_name=?
+ * GET 请求　/robot/cmd/rename_position?map_name=?&origin_name=?&new_name=?
  */
 const express = require('express')
 const cors = require('cors')

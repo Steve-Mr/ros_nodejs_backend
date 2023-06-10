@@ -1,7 +1,7 @@
 /**
- * 1.5.5 取消导航
+ * 取消导航
  * 
- * GET 请求　/gs-robot/cmd/cancel_navigate
+ * GET 请求　/robot/cmd/cancel_navigate
  */
 const express = require('express')
 const rosnodejs = require('rosnodejs')

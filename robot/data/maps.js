@@ -1,7 +1,7 @@
 /**
- * 1.3.8 获取地图列表
+ * 获取地图列表
  * 
- * GET 请求 ```/gs-robot/data/maps```
+ * GET 请求 ```/robot/data/maps```
  * 
  * 查询 map_info 表中所有数据
  * xxxFileName 字段返回均为空（目前没有使用场景）

@@ -1,7 +1,7 @@
 /**
- * 1.2.15 记录点
+ * 记录点
  * 
- * POST 请求　/gs-robot/cmd/add_position?position_name=?&type=?
+ * POST 请求　/robot/cmd/add_position?position_name=?&type=?
  * 
  */
 const express = require('express')

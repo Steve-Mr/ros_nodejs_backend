@@ -1,7 +1,7 @@
 /**
- * 1.2.16 删除点
+ * 删除点
  * 
- * GET 请求　/gs-robot/cmd/delete_position?map_name=?&position_name=?
+ * GET 请求　/robot/cmd/delete_position?map_name=?&position_name=?
  * 
  */
 const express = require('express')

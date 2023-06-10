@@ -1,7 +1,7 @@
 /**
- * 1.5.4.恢复导航
+ * 恢复导航
  * 
- * GET 请求 /gs-robot/cmd/resume_navigate 
+ * GET 请求 /robot/cmd/resume_navigate 
  * */ 
 const express = require('express')
 const rosnodejs = require('rosnodejs')

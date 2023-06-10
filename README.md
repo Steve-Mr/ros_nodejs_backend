@@ -78,7 +78,7 @@ npm install moment
             注意 /path/to/sql/file/ 需要根据自己目录位置进行调整，且 /path/to/sql/file/robot.sql 前后不需要添加引号。  
             如 ```source /home/username/catkin_ws/src/apiserver/scripts/robot.sql```  
 
-            在项目目录 /apiserver/scripts/gs-robot/database.js 中可以对数据库连接进行配置，如用户名、密码、使用的数据库名称等。
+            在项目目录 /apiserver/scripts/robot/database.js 中可以对数据库连接进行配置，如用户名、密码、使用的数据库名称等。
 
     2. 运行服务器。  
         
@@ -86,7 +86,7 @@ npm install moment
 
     3. 通过 GET 请求访问数据。  
 
-        浏览器访问 ```localhost:8080/gs-robot/data/maps```。  
+        浏览器访问 ```localhost:8080/robot/data/maps```。  
           
         预期结果：
         ```json
@@ -101,11 +101,11 @@ npm install moment
         
         在 scripts 文件夹下运行 ```node server.js``` 。  
         
-        这里的测试将会订阅 /cmd_vel 话题，该话题包含机器人运行中的实时数据，可根据具体情况对话题名称进行修改，如有的项目中该话题为 /robot_base_velocity_controller/cmd_vel，修改位置在 ```scripts/gs-robot/real_time_data/cmd_vel.js``` 中。  
+        这里的测试将会订阅 /cmd_vel 话题，该话题包含机器人运行中的实时数据，可根据具体情况对话题名称进行修改，如有的项目中该话题为 /robot_base_velocity_controller/cmd_vel，修改位置在 ```scripts/robot/real_time_data/cmd_vel.js``` 中。  
 
     3. 通过 GET 请求访问数据。  
         
-        浏览器访问 ```localhost:8080/gs-robot/real_time_data/cmd_vel``` 。  
+        浏览器访问 ```localhost:8080/robot/real_time_data/cmd_vel``` 。  
 
         预期结果如下  
 
@@ -168,7 +168,7 @@ npm install moment
 
 ### 文件
 
-1. /gs-robot/data/maps： 存放地图图片（.png）和同名的地图配置文件（.yaml），文件名和 map_info 表中对应项 map_name 字段相同。  
+1. /robot/data/maps： 存放地图图片（.png）和同名的地图配置文件（.yaml），文件名和 map_info 表中对应项 map_name 字段相同。  
     
     配置文件格式：(目前只使用了 resolution 和 origin 值，更多相关内容参考 [ROS map_server](http://wiki.ros.org/map_server))  
 
@@ -189,17 +189,17 @@ npm install moment
     - negate: 白/黑 空闲/占用的语义是否应该反转，不影响阈值的解释。
 
 
-2. /gs-robot/data/obstacles： 存放地图中的虚拟墙信息，文件名和 map_info 表中对应项 map_name 字段相同。  
+2. /robot/data/obstacles： 存放地图中的虚拟墙信息，文件名和 map_info 表中对应项 map_name 字段相同。  
 
     内容格式参照 1.9.1 获取虚拟墙数据 中 response 的 data 内容，目前 xxxWrold 项内容均未使用。
 
 ## 项目结构
 
-文件的路径参照 API 中路径设置，如 1.3.8  获取地图列表 ```/gs-robot/data/maps```	对应的 js 文件地址为 scritps/gs-robot/data/maps.js。对于 /data /cmd 等目录，在其同级文件目录中有同名的 js 文件负责路由功能，处理对其名称对应 API 的访问。
+文件的路径参照 API 中路径设置，如 1.3.8  获取地图列表 ```/robot/data/maps```	对应的 js 文件地址为 scritps/robot/data/maps.js。对于 /data /cmd 等目录，在其同级文件目录中有同名的 js 文件负责路由功能，处理对其名称对应 API 的访问。
 
 ```bash
 .
-├── gs-robot
+├── robot
 │   ├── cmd
 │   │   ├── add_position.js
 │   │   ├── cancel_navigate.js
@@ -234,39 +234,39 @@ npm install moment
 │   └── util.js
 ├── README.md
 ├── robot.sql                               # 数据库
-└── server.js                               # 注册服务器，处理对路径 /gs-robot/ 的访问请求
+└── server.js                               # 注册服务器，处理对路径 /robot/ 的访问请求
 ```
 
 ## 计划实现 API 
 
-- [x] 1.2.11 实时角速度和线速度数据 ```/gs-robot/real_time_data/cmd_vel```
-- [x] 1.2.14 地图点数据 ```/gs-robot/data/positions?map_name=?&type=?```	
-- [x] 1.2.15 记录点	```/gs-robot/cmd/add_position?position_name=?&type=? ```
-- [x] 1.2.16 删除点	```/gs-robot/cmd/delete_position?map_name=?&position_name=?```
-- [x] 1.2.17 重命名点 ```/gs-robot/cmd/rename_position?map_name=?&origin_name=?&new_name=?```	 
-- [ ] 1.3.1  开始扫描地图 ```/gs-robot/cmd/start_scan_map?map_name=?&ype=?```	
-- [ ] 1.3.2  结束扫描并保存地图(同步) ```/gs-robot/cmd/start_scan_map?map_name=?&ype=?```	
-- [ ] 1.3.3  取消扫描不保存地图 ```/gs-robot/cmd/cancel_scan_map ```
-- [ ] 1.3.4  结束扫描保存地图(异步)//推荐使用 ```/gs-robot/cmd/async_stop_scan_map ```	
-- [ ] 1.3.5  异步结束扫地图是否完成 ```/gs-robot/cmd/is_stop_scan_finished ```	
-- [ ] 1.3.6  获取实时扫地图图片png ```/gs-robot/real_time_data/scan_map_png```	
-- [x] 1.3.7  获取地图图片png ```/gs-robot/data/map_png?map_name=?```	
-- [x] 1.3.8  获取地图列表 ```/gs-robot/data/maps```	
-- [ ] 1.3.13 编辑地图 ```/gs-robot/cmd/edit_map?map_name=?&operation_type=?```	
-- [ ] 1.4.1  加载地图 ```/gs-robot/cmd/load_map?map_name=? ```	
-- [x] 1.4.10 获取初始化点列表 ```/gs-robot/data/positions?map_name=?&type=0```	<= 同 1.2.14
-- [x] 1.4.11 机器人在地图的实时位置 ```/gs-robot/real_time_data/position```
-- [x] 1.5.1  导航到导航点 ```/gs-robot/cmd/position/navigate?map_name=?&position_name=?```	
-- [x] 1.5.3  暂停导航 ```/gs-robot/cmd/pause_navigate```	
-- [x] 1.5.4  恢复导航 ```/gs-robot/cmd/resume_navigate```	
-- [x] 1.5.5  取消导航 ```/gs-robot/cmd/cancel_navigate```	
-- [x] 1.9.1  获取虚拟墙数据 ```/gs-robot/data/virtual_obstacles?map_name=?```	
-- [x] 1.9.2  添加或更新虚拟墙数据 ```/gs-robot/cmd/update_virtual_obstacles?map_name=?&obstacle_name=?```
-- [x] 1.9.3  添加点 ```/gs-robot/cmd/position/add_position```
+- [x] 实时角速度和线速度数据 ```/robot/real_time_data/cmd_vel```
+- [x] 地图点数据 ```/robot/data/positions?map_name=?&type=?```	
+- [x] 记录点	```/robot/cmd/add_position?position_name=?&type=? ```
+- [x] 删除点	```/robot/cmd/delete_position?map_name=?&position_name=?```
+- [x] 重命名点 ```/robot/cmd/rename_position?map_name=?&origin_name=?&new_name=?```	 
+- [ ] 开始扫描地图 ```/robot/cmd/start_scan_map?map_name=?&ype=?```	
+- [ ] 结束扫描并保存地图(同步) ```/robot/cmd/start_scan_map?map_name=?&ype=?```	
+- [ ] 取消扫描不保存地图 ```/robot/cmd/cancel_scan_map ```
+- [ ] 结束扫描保存地图(异步)//推荐使用 ```/robot/cmd/async_stop_scan_map ```	
+- [ ] 异步结束扫地图是否完成 ```/robot/cmd/is_stop_scan_finished ```	
+- [ ] 获取实时扫地图图片png ```/robot/real_time_data/scan_map_png```	
+- [x] 获取地图图片png ```/robot/data/map_png?map_name=?```	
+- [x] 获取地图列表 ```/robot/data/maps```	
+- [ ] 编辑地图 ```/robot/cmd/edit_map?map_name=?&operation_type=?```	
+- [ ] 加载地图 ```/robot/cmd/load_map?map_name=? ```	
+- [x] 获取初始化点列表 ```/robot/data/positions?map_name=?&type=0```	<= 同 1.2.14
+- [x] 机器人在地图的实时位置 ```/robot/real_time_data/position```
+- [x] 导航到导航点 ```/robot/cmd/position/navigate?map_name=?&position_name=?```	
+- [x] 暂停导航 ```/robot/cmd/pause_navigate```	
+- [x] 恢复导航 ```/robot/cmd/resume_navigate```	
+- [x] 取消导航 ```/robot/cmd/cancel_navigate```	
+- [x] 获取虚拟墙数据 ```/robot/data/virtual_obstacles?map_name=?```	
+- [x] 添加或更新虚拟墙数据 ```/robot/cmd/update_virtual_obstacles?map_name=?&obstacle_name=?```
+- [x] 添加点 ```/robot/cmd/position/add_position```
 
-- [ ] 收到任务确认 ```/gs-robot/others/task_confirm```  
+- [ ] 收到任务确认 ```/robot/others/task_confirm```  
 
-备注： 1.2.15 记录点 API 使用了 POST 请求，因此 positon_name 和 type 为可选参数。  
+备注： 记录点 API 使用了 POST 请求，因此 positon_name 和 type 为可选参数。  
 
 POST 请求需要内容样例如下：  
 
@@ -298,9 +298,9 @@ const express = require('express');
 const app = express();
 
 // 针对不同请求的不同路由
-app.use('/gs-robot', require('./gs-robot/real_time_data'))
-app.use('/gs-robot', require('./gs-robot/data'))
-app.use('/gs-robot', require('./gs-robot/cmd'))
+app.use('/robot', require('./robot/real_time_data'))
+app.use('/robot', require('./robot/data'))
+app.use('/robot', require('./robot/cmd'))
 
 
 // 监听 8080 端口
@@ -309,7 +309,7 @@ app.listen(8080, function () {
 })
 ```
 
-**[real_time_data.js](gs-robot/real_time_data.js)**:   
+**[real_time_data.js](robot/real_time_data.js)**:   
 
 real_time_data.js 在这里承担了次级路由的功能，将访问路由到对应的中间件中。
 
@@ -324,7 +324,7 @@ router.use('/real_time_data', require('./real_time_data/cmd_vel'));
 module.exports = router
 ```  
 
-**[cmd_vel.js](gs-robot/real_time_data/cmd_vel.js)**:   
+**[cmd_vel.js](robot/real_time_data/cmd_vel.js)**:   
 
 cmd_vel.js 中包含了较为典型的中间件函数，中间件函数能够访问请求对象、响应对象以及应用程序的请求/响应循环中的下一个中间件函数。下一个中间件函数通常由名为 next 的变量来表示，如果当前中间件函数没有结束请求/响应循环，那么它必须调用 next()，以将控制权传递给下一个中间件函数。否则，请求将保持挂起状态。   
 

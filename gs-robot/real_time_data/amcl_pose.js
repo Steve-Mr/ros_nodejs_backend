@@ -6,8 +6,11 @@
  const express = require('express');
  const router = express.Router();
 //  const util = require('../util')
+console.log("pre amcl pose")
 
  const rclnodejs = require('rclnodejs');
+ const rclcontext = require('../util').getRclContext;
+ console.log('starting amcl pose')
  
  /**
   * get: 中间件适用的 HTTP 方法
@@ -19,7 +22,6 @@
  */
  router.get('/amcl_pose', (req, res) => {
  
-  //  const rosnodejs = require('rosnodejs');
    const correct = JSON.parse('{"errorCode":"","msg":"successed","successed":true}');
    let message;
  
@@ -32,7 +34,7 @@
 
     console.log("started")
 
-    rclnodejs.init()
+    rclcontext
     .then(() => {
       const node = new rclnodejs.Node('subscriber_example');
       console.log("starting subscriber")
@@ -44,6 +46,7 @@
           console.log("logging")
           console.log(pose)
           node.destroySubscription(subscriber)
+          node.destroy()
           resolve(pose)
         })
 
@@ -51,26 +54,9 @@
 
         node.spin();
     }) 
-    // util.init_connection(util.node_name);
-     // 创建名字为 navigation_node 的节点，可能有同一时间只能有一个节点的限制（不确定）
-    //  rosnodejs.initNode(util.node_name).then(() => {
-    //    const nh = rosnodejs.nh;
-    //    /**
-    //     * subscribe(topic, type, callback, options={})
-    //     * @param topic: 订阅话题名称
-    //     * @param type: 订阅话题中消息的类型名
-    //     * @param callback: 获取到消息后的回调函数，下面代码中同样适用了 lambda 表达式简化
-    //     * @param options: 选项对象，下面代码中未使用
-    //     * 
-    //    */
-    //    const sub = nh.subscribe(util.topic_amcl, util.message_amcl, (msg) => {
-    //      // 通过 resolve 将 msg 传递下去
-    //      resolve(msg)
-    //    });
-    //  });
+
    })
    p.then(function (data) {
-    // rosnodejs.nh.unsubscribe(util.topic_amcl)
      message = {
        "data": JSON.parse(JSON.stringify(data)), "errorCode": "",
        "msg": "successed", "successed": true

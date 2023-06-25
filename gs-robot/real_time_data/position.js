@@ -2,11 +2,14 @@
  * 用于获取小车运行状态
  * 
  */
+'use strict';
 
 const express = require('express');
 const router = express.Router();
 const cors = require('cors');
 const util = require('../util')
+const rclnodejs = require('rclnodejs')
+const rclcontext = require('../util').getRclContext
 
 const app = express();
 app.options('*', cors())
@@ -14,19 +17,19 @@ app.use(cors())
 
 app.get('/position', (req, res) => {
 
-  const rosnodejs = require('rosnodejs');
   const correct = JSON.parse('{"errorCode":"","msg":"successed","successed":true}');
   let message;
 
-  let p = new Promise(function (resolve, reject) {
-    // util.init_connection(util.node_name);
-    // 创建名字为 navigation_node 的节点，可能有同一时间只能有一个节点的限制（不确定）
-    rosnodejs.initNode(util.node_name).then(() => {
-      const nh = rosnodejs.nh;
-
-      nh.subscribe(util.topic_tf, util.message_tf, (result) => {
-        // let msg_string = JSON.stringify(msg)
-        if (JSON.stringify(result).includes('"child_frame_id":"base_link"')) {
+  rclcontext.then(() => {
+    console.log('started')
+    const node = new rclnodejs.Node('position_subscriber');
+    const subscriber = node.createSubscription(
+      'tf2_msgs/msg/TFMessage', '/tf', {},
+      (result) => {
+        console.log("got message")
+        if (JSON.stringify(result).includes('"child_frame_id":"base_footprint"')) {
+          node.destroySubscription(subscriber)
+          console.log(result)
           let msg = {
             "angle": -173.41528128678252,
             "gridPosition": {
@@ -64,43 +67,38 @@ app.get('/position', (req, res) => {
           msg.gridPosition.x = result.transforms[0].transform.translation.x;
           msg.gridPosition.y = result.transforms[0].transform.translation.y;
           msg.angle = yaw;
-          resolve(msg)
+          const mapInfoNode = new rclnodejs.Node('map_subscriber');
+
+          let qos_map = new rclnodejs.QoS
+          qos_map.depth = 10
+          qos_map.history = rclnodejs.QoS.HistoryPolicy.RMW_QOS_POLICY_HISTORY_SYSTEM_DEFAULT
+          qos_map.durability = rclnodejs.QoS.DurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL
+          qos_map.reliability = rclnodejs.QoS.ReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE
+
+          const subscriber_map = mapInfoNode.createSubscription(
+            'nav_msgs/msg/OccupancyGrid',
+            'map', {qos: qos_map},
+            (map) => {
+              console.log(map.info)
+              mapInfoNode.destroySubscription(subscriber_map);
+              msg.mapInfo.gridHeight = map.info.height;
+              msg.mapInfo.gridWidth = map.info.width;
+              msg.mapInfo.originX = map.info.origin.position.x;
+              msg.mapInfo.originY = map.info.origin.position.y;
+              msg.mapInfo.resolution = map.info.resolution;
+
+              mapInfoNode.destroy();
+              res.json(msg);
+            }
+          )
+          mapInfoNode.spin();
+        node.destroy()
+          // res.json(msg);
         }
-      });
-    });
-  }).then(function (data) {
+      }
+    )
 
-    new Promise(function (resolve, reject) {
-      const nh = rosnodejs.nh;
-      nh.unsubscribe(util.topic_tf)
-      nh.subscribe(util.topic_map_metadata, util.message_map_metadata, (result) => {
-        data.mapInfo.gridHeight = result.height;
-        data.mapInfo.gridWidth = result.width;
-        data.mapInfo.originX = result.origin.position.x;
-        data.mapInfo.originY = result.origin.position.y;
-        data.mapInfo.resolution = result.resolution;
-        resolve(data);
-      });
-
-    }).then(function (data) {
-      new Promise(function (resolve, reject) {
-        const nh = rosnodejs.nh;
-        nh.unsubscribe(util.topic_map_metadata);
-        nh.subscribe(util.topic_odom, util.message_odom, (result) => {
-          // {queueSize:1}, 
-          data.worldPosition = result.pose.pose;
-          // console.log(data)
-          resolve(data)
-        })
-
-      }).then(function (data) {
-        const nh = rosnodejs.nh;
-        nh.unsubscribe(util.topic_odom)
-        res.json(data);
-      }).catch(err => console.err(err))
-    }).catch(err => console.err(err))
-  }).catch(err => {
-    console.err(err);
+    node.spin();
   })
 })
 

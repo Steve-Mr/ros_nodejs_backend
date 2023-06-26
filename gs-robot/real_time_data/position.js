@@ -20,6 +20,8 @@ app.get('/position', (req, res) => {
   const correct = JSON.parse('{"errorCode":"","msg":"successed","successed":true}');
   let message;
 
+  //Todo: add global map info and get map info first
+
   rclcontext.then(() => {
     console.log('started')
     const node = new rclnodejs.Node('position_subscriber');

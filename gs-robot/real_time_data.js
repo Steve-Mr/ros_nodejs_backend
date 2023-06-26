@@ -3,7 +3,7 @@ const router = express.Router()
 console.log('router realtime data starting')
 
 
-// router.use('/real_time_data', require('./real_time_data/cmd_vel'));
+router.use('/real_time_data', require('./real_time_data/cmd_vel'));
 router.use('/real_time_data', require('./real_time_data/amcl_pose'));
 // router.use('/real_time_data', require('./real_time_data/sub_topic'));
 router.use('/real_time_data', require('./real_time_data/position'))

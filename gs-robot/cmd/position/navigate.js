@@ -10,11 +10,15 @@ const rosnodejs = require('rosnodejs')
 const router = express.Router()
 const database = require('../../database')
 const util = require('../../util')
+const rclcontext = require('../../util').getRclContext
+const rclnodejs = require('rclnodejs')
 
 // 用来保存目标点坐标，在到达目标点/导航取消时清空内容，因此也可以作为导航是否完成的标志
 const pos = {}
 // 在无法达到目标时的错误状态，默认 UNKNOWN，被暂停则为 PAUSED，被取消则为 CANCELED
 const state = { code: "UNKNOWN" }
+
+
 
 router.get('/position/navigate', (req, res) => {
     let map_name, position_name;

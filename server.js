@@ -25,7 +25,7 @@ console.log("5");
 // app.use('/gs-robot', require('./gs-robot/data'))
 console.log("6");
 
-// app.use('/gs-robot', require('./gs-robot/cmd'))
+app.use('/gs-robot', require('./gs-robot/cmd'))
 
 console.log("7");
 

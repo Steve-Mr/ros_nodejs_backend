@@ -7,13 +7,25 @@
  */
 const express = require('express')
 const router = express.Router()
-const database = require('../../database')
 const util = require('../../util')
 const rclcontext = require('../../util').getRclContext
 const rclnodejs = require('rclnodejs')
+const e = require('express')
 const NavigateToPose = rclnodejs.require("nav2_msgs/action/NavigateToPose")
 const PoseStamped = rclnodejs.require("geometry_msgs/msg/PoseStamped");
 
+const STATE_NONE = 0;
+const STATE_NAVIGATING = 1;
+const STATE_CANCELLED = 2;
+const STATE_PAUSED = 3;
+const STATE_ERROR = 4;
+const STATE_FINISHED = 5;
+
+// 在无法达到目标时的错误状态，默认 UNKNOWN，被暂停则为 PAUSED，被取消则为 CANCELED
+const state = {
+    currentState: STATE_NONE,
+    code: "UNKNOWN"
+}
 
 class MoveBaseActionClient {
     constructor(node) {
@@ -35,27 +47,24 @@ class MoveBaseActionClient {
         const goalHandle = await this._actionClient.sendGoal(goal, (feedback) =>
             this.feedbackCallback(feedback)
         );
-
         this._goalHandle = goalHandle;
 
         if (!goalHandle.isAccepted()) {
             this._node.getLogger().info('Goal rejected');
-            return;
+            return STATE_ERROR;
         }
 
         this._node.getLogger().info('Goal accepted');
 
-        const result = await goalHandle.getResult();
-
         if (goalHandle.isSucceeded()) {
-            this._node
-                .getLogger()
-                .info(`Goal suceeded with result: ${result.result}`);
-            rclnodejs.shutdown();
-            return 1
+            return STATE_FINISHED
         } else {
-            this._node.getLogger().info(`Goal failed with status: ${status}`);
-            return 0
+            if (goalHandle.isCanceled()) {
+                return STATE_CANCELLED
+            }
+            if (goalHandle.isAborted()) {
+                return STATE_ERROR
+            }
         }
     }
 
@@ -71,54 +80,124 @@ class MoveBaseActionClient {
 
         if (response.goals_canceling.length > 0) {
             this._node.getLogger().info('Goal successfully canceled');
+            return true
         } else {
             this._node.getLogger().info('Goal failed to cancel');
+            return false
         }
 
-        rclnodejs.shutdown();
     }
 }
 
-// 用来保存目标点坐标，在到达目标点/导航取消时清空内容，因此也可以作为导航是否完成的标志
-const pos = {}
-// 在无法达到目标时的错误状态，默认 UNKNOWN，被暂停则为 PAUSED，被取消则为 CANCELED
-const state = { code: "UNKNOWN" }
 
+function updateState(newState) {
+    state.currentState = newState
+    switch (newState) {
+        case STATE_NONE:
+        case STATE_NAVIGATING:
+            state.code = "UNKNOWN";
+            break;
+        case STATE_FINISHED:
+            state.code = "SUCCEDED"
+            break;
+        case STATE_CANCELLED:
+            state.code = "CANCELLED";
+            break;
+        case STATE_PAUSED:
+            state.code = "PAUSED";
+            break;
+        case STATE_ERROR:
+            state.code = "ERROR";
+            break;
+    }
 
+}
 
-router.get('/position/navigate', (req, res) => {
+const goalMsg = new NavigateToPose.Goal()
 
-    const pose = new PoseStamped();
-    pose.header.frame_id = 'map';
-    pose.pose.position.x = -5;
-    pose.pose.position.y = -5;
-    pose.pose.position.z = 0;
-    pose.pose.orientation.w = 1;
+rclcontext.then(() => {
+    const node = new rclnodejs.Node('navigate_to_pose_client_node');
+    const client = new MoveBaseActionClient(node);
 
-    const goalMsg = new NavigateToPose.Goal()
-    goalMsg.pose = pose;
+    router.get('/position/navigate', (req, res) => {
 
-    rclcontext.then(() => {
-        const node = new rclnodejs.Node('navigate_to_pose_client_node');
-        const client = new MoveBaseActionClient(node);
+        const pose = new PoseStamped();
+        pose.header.frame_id = 'map';
+        pose.pose.position.x = -2;
+        pose.pose.position.y = -2;
+        pose.pose.position.z = 0;
+        pose.pose.orientation.w = 1;
+
+        goalMsg.pose = pose;
+
+        updateState(STATE_NAVIGATING);
         client.sendGoal(goalMsg).then((result) => {
-            res.json(result)
+            console.log(result)
+            updateState(result)
+            res.json(state.code)
+            updateState(STATE_NONE)
         });
-        node.spin()
-    })
-})
 
-// 清除 pos 内容，用于外部调用
-function clearPos() {
-    if (Object.keys(pos).length) {
-        delete pos.x;
-        delete pos.y;
-    }
-}
+    })
+
+    router.get('/cancel_navigate', (req, res) => {
+        // 有正在导航任务才能取消任务
+        if (state.currentState == STATE_NAVIGATING) {
+            // 设置 navigate 状态码，可在 navigate 返回的 json 中显示
+
+            client.cancelGoal().then((result) => {
+                console.log(result)
+                if(result){
+                    updateState(STATE_CANCELLED)
+                    res.json(util.successed_json)
+                } else {
+                    res.json(util.error_json)
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+        } else {
+            res.json(util.error_json)
+        }
+    })
+
+    router.get('/pause_navigate', (_req, res) => {
+        // 正在有导航任务才能暂停
+        if (state.currentState == STATE_NAVIGATING) {
+            client.cancelGoal().then((result) => {
+                if(result){
+                    updateState(STATE_PAUSED)
+                    res.json(util.successed_json)
+                }else{
+                    res.json(util.error_json)
+                }
+            }).catch((error) => {
+                res.json(util.error_json)
+            })
+        } else {
+            res.json(util.error_json)
+        }
+    })
+
+    router.get('/resume_navigate', (req, res) => {
+        // navigate.pos 默认为 {} 即空对象，其非空时则可以恢复导航
+        if (state.currentState = STATE_PAUSED) {
+            updateState(STATE_NAVIGATING);
+            client.sendGoal(goalMsg).then((result) => {
+                console.log(result)
+                updateState(result)
+                res.json(state.code)
+                updateState(STATE_NONE)
+            });
+        } else {
+            res.json(util.error_json)
+        }
+    })
+
+    node.spin()
+})
 
 module.exports = {
     router,
-    pos: pos,
-    clearPos: clearPos,
     state: state
 }

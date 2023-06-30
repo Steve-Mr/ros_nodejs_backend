@@ -41,37 +41,47 @@ class MoveBaseActionClient {
     async sendGoal(goal) {
         this._node.getLogger().info('Waiting for action server...');
         await this._actionClient.waitForServer();
-
+    
         this._node.getLogger().info('Sending goal request...');
+    
+        try {
+            const goalHandle = await this._actionClient.sendGoal(goal);
+            this._goalHandle = goalHandle;
+    
+            if (!goalHandle.isAccepted()) {
+                this._node.getLogger().info('Goal rejected');
+                return STATE_ERROR;
+            }
+    
+            this._node.getLogger().info('Goal accepted');
+    
+            // Wait for the goal to be completed or canceled
+            const result = await goalHandle.getResult();
 
-        const goalHandle = await this._actionClient.sendGoal(goal, (feedback) =>
-            this.feedbackCallback(feedback)
-        );
-        this._goalHandle = goalHandle;
-
-        if (!goalHandle.isAccepted()) {
-            this._node.getLogger().info('Goal rejected');
+            console.log(result.result)
+    
+            // Check the final status of the goal
+            if (goalHandle.isSucceeded()) {
+                return STATE_FINISHED
+            } else {
+                if (goalHandle.isCanceled()) {
+                    return STATE_CANCELLED
+                }
+                if (goalHandle.isAborted()) {
+                    return STATE_ERROR
+                }
+            }
+        } catch (error) {
+            // Handle possible exceptions
+            this._node.getLogger().error(error.message);
             return STATE_ERROR;
         }
-
-        this._node.getLogger().info('Goal accepted');
-
-        if (goalHandle.isSucceeded()) {
-            return STATE_FINISHED
-        } else {
-            if (goalHandle.isCanceled()) {
-                return STATE_CANCELLED
-            }
-            if (goalHandle.isAborted()) {
-                return STATE_ERROR
-            }
-        }
-    }
+    }  
 
     feedbackCallback(feedbackMessage) {
-        this._node
-            .getLogger()
-            .info(`Received feedback: ${feedbackMessage}`);
+        // this._node
+        //     .getLogger()
+        //     .info(`Received feedback: ${feedbackMessage}`);
     }
 
     async cancelGoal() {

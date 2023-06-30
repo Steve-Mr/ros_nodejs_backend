@@ -7,10 +7,10 @@
  */
 const express = require('express')
 const router = express.Router()
+const database = require('../../database')
 const util = require('../../util')
 const rclcontext = require('../../util').getRclContext
 const rclnodejs = require('rclnodejs')
-const e = require('express')
 const NavigateToPose = rclnodejs.require("nav2_msgs/action/NavigateToPose")
 const PoseStamped = rclnodejs.require("geometry_msgs/msg/PoseStamped");
 
@@ -19,7 +19,7 @@ const STATE_NAVIGATING = 1;
 const STATE_CANCELLED = 2;
 const STATE_PAUSED = 3;
 const STATE_ERROR = 4;
-const STATE_FINISHED = 5;
+const STATE_SUCCEEDED = 5;
 
 // 在无法达到目标时的错误状态，默认 UNKNOWN，被暂停则为 PAUSED，被取消则为 CANCELED
 const state = {
@@ -36,36 +36,41 @@ class MoveBaseActionClient {
             'nav2_msgs/action/NavigateToPose',
             '/navigate_to_pose'
         );
+
+        this.goalPaused = false;
     }
 
     async sendGoal(goal) {
         this._node.getLogger().info('Waiting for action server...');
         await this._actionClient.waitForServer();
-    
+
         this._node.getLogger().info('Sending goal request...');
-    
+
         try {
             const goalHandle = await this._actionClient.sendGoal(goal);
             this._goalHandle = goalHandle;
-    
+
             if (!goalHandle.isAccepted()) {
                 this._node.getLogger().info('Goal rejected');
                 return STATE_ERROR;
             }
-    
+
             this._node.getLogger().info('Goal accepted');
-    
+
             // Wait for the goal to be completed or canceled
             const result = await goalHandle.getResult();
 
-            console.log(result.result)
-    
             // Check the final status of the goal
             if (goalHandle.isSucceeded()) {
-                return STATE_FINISHED
+                return STATE_SUCCEEDED
             } else {
                 if (goalHandle.isCanceled()) {
-                    return STATE_CANCELLED
+                    if (this.goalPaused) {
+                        this.goalPaused = false
+                        return STATE_PAUSED
+                    } else {
+                        return STATE_CANCELLED
+                    }
                 }
                 if (goalHandle.isAborted()) {
                     return STATE_ERROR
@@ -76,16 +81,11 @@ class MoveBaseActionClient {
             this._node.getLogger().error(error.message);
             return STATE_ERROR;
         }
-    }  
-
-    feedbackCallback(feedbackMessage) {
-        // this._node
-        //     .getLogger()
-        //     .info(`Received feedback: ${feedbackMessage}`);
     }
 
-    async cancelGoal() {
+    async cancelGoal(paused = false) {
         this._node.getLogger().info('Canceling goal');
+        this.goalPaused = paused
         const response = await this._goalHandle.cancelGoal();
 
         if (response.goals_canceling.length > 0) {
@@ -93,9 +93,9 @@ class MoveBaseActionClient {
             return true
         } else {
             this._node.getLogger().info('Goal failed to cancel');
+            this.goalPaused = false
             return false
         }
-
     }
 }
 
@@ -107,8 +107,8 @@ function updateState(newState) {
         case STATE_NAVIGATING:
             state.code = "UNKNOWN";
             break;
-        case STATE_FINISHED:
-            state.code = "SUCCEDED"
+        case STATE_SUCCEEDED:
+            state.code = "SUCCEEDED"
             break;
         case STATE_CANCELLED:
             state.code = "CANCELLED";
@@ -131,23 +131,61 @@ rclcontext.then(() => {
 
     router.get('/position/navigate', (req, res) => {
 
-        const pose = new PoseStamped();
-        pose.header.frame_id = 'map';
-        pose.pose.position.x = -2;
-        pose.pose.position.y = -2;
-        pose.pose.position.z = 0;
-        pose.pose.orientation.w = 1;
+        let map_name, position_name;
 
-        goalMsg.pose = pose;
+        if (typeof req.query.map_name != 'undefined' &&
+            typeof req.query.position_name != undefined &&  // 是否包含了参数
+            req.query.map_name && req.query.position_name) { // 参数是否有值
+            map_name = req.query.map_name;
+            position_name = req.query.position_name;
+        } else {
+            res.json(util.error_json)
+            return;
+        }
 
-        updateState(STATE_NAVIGATING);
-        client.sendGoal(goalMsg).then((result) => {
-            console.log(result)
-            updateState(result)
-            res.json(state.code)
-            updateState(STATE_NONE)
-        });
+        new Promise(function (resolve, reject) {
 
+            // 第一步确认请求点存在并获取点信息
+            let query_sql = "SELECT * FROM points_list WHERE name = ? AND map_name = ?"
+
+            database.query(query_sql, [position_name, map_name], (err, data) => {
+                if (err || data.length === 0) {
+                    res.json(util.error_json);
+                    reject("cannot get position info")
+                }
+                resolve(data)
+            })
+        }).then(function (data) {
+
+            const pose = new PoseStamped();
+            pose.header.frame_id = 'map';
+            pose.pose.position.x = data[0].gridX;
+            pose.pose.position.y = data[0].gridY;
+            pose.pose.position.z = 0;
+            pose.pose.orientation.w = 1;
+
+            goalMsg.pose = pose;
+
+            updateState(STATE_NAVIGATING);
+            client.sendGoal(goalMsg).then((result) => {
+                console.log(result)
+                updateState(result)
+                if (result === STATE_SUCCEEDED) {
+                    res.json(util.successed_json)
+                } else {
+                    let msg = JSON.parse(JSON.stringify(util.error_json));
+                    msg.errorCode = state.code;
+                    res.json(msg)
+                }
+                updateState(STATE_NONE)
+            });
+
+        }).catch((err) => {
+            console.log(err)
+            res.json(util.error_json)
+        }).catch((err) => {
+            console.log(err)
+        })
     })
 
     router.get('/cancel_navigate', (req, res) => {
@@ -157,7 +195,7 @@ rclcontext.then(() => {
 
             client.cancelGoal().then((result) => {
                 console.log(result)
-                if(result){
+                if (result) {
                     updateState(STATE_CANCELLED)
                     res.json(util.successed_json)
                 } else {
@@ -174,11 +212,11 @@ rclcontext.then(() => {
     router.get('/pause_navigate', (_req, res) => {
         // 正在有导航任务才能暂停
         if (state.currentState == STATE_NAVIGATING) {
-            client.cancelGoal().then((result) => {
-                if(result){
+            client.cancelGoal(true).then((result) => {
+                if (result) {
                     updateState(STATE_PAUSED)
                     res.json(util.successed_json)
-                }else{
+                } else {
                     res.json(util.error_json)
                 }
             }).catch((error) => {
@@ -196,7 +234,13 @@ rclcontext.then(() => {
             client.sendGoal(goalMsg).then((result) => {
                 console.log(result)
                 updateState(result)
-                res.json(state.code)
+                if (result === STATE_SUCCEEDED) {
+                    res.json(util.successed_json)
+                } else {
+                    let msg = JSON.parse(JSON.stringify(util.error_json));
+                    msg.errorCode = state.code;
+                    res.json(msg)
+                }
                 updateState(STATE_NONE)
             });
         } else {

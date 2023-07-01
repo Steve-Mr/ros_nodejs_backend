@@ -50,7 +50,7 @@ const path = require('path');
 
 const root_dir = __dirname
 
-const maps_dir = path.resolve(path.join(__dirname, "..", '..', '..', 'navigation', 'map'));
+const maps_dir = path.resolve(path.join(__dirname, "..", '..', '..', 'basic_mobile_robot', 'maps'));
 
 console.log('util 6')
 
@@ -75,15 +75,15 @@ console.log('util 8')
 
 
 module.exports.topic_tf = '/tf';
-module.exports.message_tf = 'tf/tfMessage';
+module.exports.message_tf = 'tf2_msgs/msg/TFMessage';
 module.exports.topic_cmd_vel = '/cmd_vel';
-module.exports.message_cmd_vel = 'geometry_msgs/Twist';
+module.exports.message_cmd_vel = 'geometry_msgs/msg/Twist';
 module.exports.topic_map_metadata = '/map_metadata';
 module.exports.message_map_metadata = 'nav_msgs/MapMetaData';
 module.exports.topic_odom = '/odom';
-module.exports.message_odom = 'nav_msgs/Odometry';
+module.exports.message_odom = 'nav_msgs/msg/Odometry';
 module.exports.topic_amcl = '/amcl_pose';
-module.exports.message_amcl = 'geometry_msgs/PoseWithCovarianceStamped';
+module.exports.message_amcl = 'geometry_msgs/msg/PoseWithCovarianceStamped';
 
 module.exports.message_move_base = 'move_base_msgs/MoveBase'
 

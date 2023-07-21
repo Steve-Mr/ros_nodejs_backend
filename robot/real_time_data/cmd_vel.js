@@ -57,9 +57,10 @@ router.get('/cmd_vel', (req, res) => {
   const child_process = require('child_process')
   const fun = child_process.fork('./robot/real_time_data/cmd_vel_function.js')
   fun.on('message', (msg) =>  {
-    fun.kill();
+    // fun.kill();
     res.json(msg)
   })
+
 })
 
 module.exports = router
